@@ -1,10 +1,21 @@
 package fr.margeo.app;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -24,6 +35,26 @@ import java.util.Iterator;
 public class MainActivity extends Activity {
 
     private WebView web;
+    private ValueCallback<Uri[]> fichiers;
+    private static final int CHOIX_FICHIER = 7;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != CHOIX_FICHIER || fichiers == null) return;
+        Uri[] res = null;
+        if (resultCode == RESULT_OK && data != null) {
+            if (data.getClipData() != null) {
+                ClipData cd = data.getClipData();
+                res = new Uri[cd.getItemCount()];
+                for (int i = 0; i < cd.getItemCount(); i++) res[i] = cd.getItemAt(i).getUri();
+            } else if (data.getData() != null) {
+                res = new Uri[]{data.getData()};
+            }
+        }
+        fichiers.onReceiveValue(res);
+        fichiers = null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +70,7 @@ public class MainActivity extends Activity {
         s.setDomStorageEnabled(true);
         web.addJavascriptInterface(new Bridge(), "Native");
 
-        // Les liens vers eBay s'ouvrent dans le navigateur ou l'appli eBay
+        // Les liens vers eBay et GitHub s'ouvrent dans le navigateur ou l'appli eBay
         web.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -52,13 +83,35 @@ public class MainActivity extends Activity {
             }
         });
 
+        // Sélecteur de fichiers (photos de revente, restauration de sauvegarde)
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback,
+                                             FileChooserParams params) {
+                if (fichiers != null) fichiers.onReceiveValue(null);
+                fichiers = callback;
+                try {
+                    Intent i = params.createIntent();
+                    if (params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE) {
+                        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    }
+                    startActivityForResult(i, CHOIX_FICHIER);
+                } catch (Exception e) {
+                    fichiers = null;
+                    return false;
+                }
+                return true;
+            }
+        });
+
         web.loadUrl("file:///android_asset/index.html");
         setContentView(web);
+        Alertes.planifier(this);
     }
 
     @Override
     public void onBackPressed() {
-        // Ferme d'abord un panneau ouvert, sinon quitte l'appli
+        // Ferme d'abord un panneau ou un onglet, sinon quitte l'appli
         web.evaluateJavascript("window.onBack ? window.onBack() : false", value -> {
             if (!"true".equals(value)) retourSysteme();
         });
@@ -68,7 +121,10 @@ public class MainActivity extends Activity {
         super.onBackPressed();
     }
 
-    /** Appels HTTP faits par Android (pas de blocage CORS comme dans un navigateur). */
+    private void rappel(String js) {
+        runOnUiThread(() -> web.evaluateJavascript(js, null));
+    }
+
     class Bridge {
         /** Numéro de version installé (= numéro de compilation GitHub). */
         @JavascriptInterface
@@ -80,6 +136,89 @@ public class MainActivity extends Activity {
             }
         }
 
+        /** Enregistre clés, réglages et alertes pour la tâche en arrière-plan. */
+        @JavascriptInterface
+        public void saveConfig(String json) {
+            getSharedPreferences(Alertes.PREFS, 0).edit().putString("cfg", json).apply();
+            Alertes.planifier(MainActivity.this);
+        }
+
+        /** Résultat de la dernière vérification des alertes. */
+        @JavascriptInterface
+        public String lastRun() {
+            return getSharedPreferences(Alertes.PREFS, 0).getString("dernier", "");
+        }
+
+        /** Vérifie les alertes tout de suite. */
+        @JavascriptInterface
+        public void runAlerts() {
+            new Thread(() -> {
+                String r = Alertes.lancer(getApplicationContext());
+                rappel("window.__alertsDone && window.__alertsDone(" + r + ")");
+            }).start();
+        }
+
+        /** Demande l'autorisation d'afficher des notifications (Android 13+). */
+        @JavascriptInterface
+        public void askNotifications() {
+            if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS")
+                    != PackageManager.PERMISSION_GRANTED) {
+                runOnUiThread(() -> requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 1));
+            }
+        }
+
+        /** Enregistre un fichier dans Téléchargements. Renvoie "" si OK, sinon le message d'erreur. */
+        @JavascriptInterface
+        public String saveFile(String nom, String mime, String contenu) {
+            try {
+                if (Build.VERSION.SDK_INT >= 29) {
+                    ContentValues cv = new ContentValues();
+                    cv.put(MediaStore.MediaColumns.DISPLAY_NAME, nom);
+                    cv.put(MediaStore.MediaColumns.MIME_TYPE, mime);
+                    cv.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+                    Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
+                    if (uri == null) return "Impossible de créer le fichier";
+                    OutputStream o = getContentResolver().openOutputStream(uri);
+                    if (o == null) return "Impossible d'écrire le fichier";
+                    o.write(contenu.getBytes("UTF-8"));
+                    o.close();
+                    return "";
+                }
+                return "ANCIEN"; // Android 9 et moins : on passe par le partage
+            } catch (Exception e) {
+                return String.valueOf(e.getMessage());
+            }
+        }
+
+        /** Ouvre le menu Partager d'Android avec un texte. */
+        @JavascriptInterface
+        public void share(String titre, String texte) {
+            runOnUiThread(() -> {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, titre);
+                i.putExtra(Intent.EXTRA_TEXT, texte);
+                startActivity(Intent.createChooser(i, titre));
+            });
+        }
+
+        /** Met à jour le widget d'écran d'accueil. */
+        @JavascriptInterface
+        public void saveWidget(String json) {
+            getSharedPreferences(Alertes.PREFS, 0).edit().putString("widget", json).apply();
+            Widget.maj(MainActivity.this);
+        }
+
+        /** Copie un texte dans le presse-papiers. */
+        @JavascriptInterface
+        public void copy(String text) {
+            runOnUiThread(() -> {
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("Margeo", text));
+            });
+        }
+
+        /** Appels HTTP faits par Android (pas de blocage CORS comme dans un navigateur). */
         @JavascriptInterface
         public void http(final String id, final String method, final String url,
                          final String headers, final String body) {
@@ -90,7 +229,7 @@ public class MainActivity extends Activity {
                     HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
                     c.setRequestMethod(method);
                     c.setConnectTimeout(15000);
-                    c.setReadTimeout(25000);
+                    c.setReadTimeout(60000);
                     JSONObject h = new JSONObject(headers == null || headers.isEmpty() ? "{}" : headers);
                     Iterator<String> keys = h.keys();
                     while (keys.hasNext()) {
@@ -109,9 +248,7 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
                     text = "Erreur réseau : " + e.getMessage();
                 }
-                final String js = "window.__native(" + JSONObject.quote(id) + "," + code + ","
-                        + JSONObject.quote(text) + ")";
-                runOnUiThread(() -> web.evaluateJavascript(js, null));
+                rappel("window.__native(" + JSONObject.quote(id) + "," + code + "," + JSONObject.quote(text) + ")");
             }).start();
         }
     }
