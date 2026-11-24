@@ -41,3 +41,4 @@ jobs:
           tag_name: build-${{ github.run_number }}
           name: Margeo – version ${{ github.run_number }}
           files: Margeo.apk
+          body: ${{ github.event.head_commit.message }}

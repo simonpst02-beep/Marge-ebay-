@@ -70,6 +70,16 @@ public class MainActivity extends Activity {
 
     /** Appels HTTP faits par Android (pas de blocage CORS comme dans un navigateur). */
     class Bridge {
+        /** Numéro de version installé (= numéro de compilation GitHub). */
+        @JavascriptInterface
+        public int version() {
+            try {
+                return getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+
         @JavascriptInterface
         public void http(final String id, final String method, final String url,
                          final String headers, final String body) {

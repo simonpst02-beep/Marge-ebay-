@@ -2,6 +2,9 @@ plugins {
     id 'com.android.application'
 }
 
+// Le numéro de version suit le numéro de compilation GitHub (1, 2, 3…)
+def numeroBuild = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+
 android {
     namespace 'fr.margeo.app'
     compileSdk 34
@@ -10,13 +13,27 @@ android {
         applicationId 'fr.margeo.app'
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName '1.0'
+        versionCode numeroBuild
+        versionName "1.0.${numeroBuild}"
+    }
+
+    // Clé de signature fixe : indispensable pour installer les mises à jour par-dessus
+    signingConfigs {
+        fixe {
+            storeFile file('margeo.keystore')
+            storePassword 'margeo123'
+            keyAlias 'margeo'
+            keyPassword 'margeo123'
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.fixe
+        }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.fixe
         }
     }
 

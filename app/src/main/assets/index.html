@@ -151,10 +151,78 @@
   .kmsg{margin-top:14px;font-size:.85rem;display:none;padding:12px 14px;border-radius:14px}
   .kmsg.ok{display:block;background:rgba(52,211,153,.1);color:var(--good)}
   .kmsg.ko{display:block;background:rgba(251,113,133,.1);color:var(--bad)}
+
+  /* Onglet Paramètres */
+  [hidden]{display:none!important}
+  nav button{position:relative}
+  nav button .nd{position:absolute;top:9px;right:15px;width:9px;height:9px;border-radius:50%;background:var(--a2);box-shadow:0 0 0 3px rgba(20,21,28,.9);display:none}
+  nav button.upd .nd{display:block}
+  .ptitle{font-size:1.9rem;font-weight:800;letter-spacing:-.04em;margin:26px 2px 4px}
+  .psub{font-size:.85rem;color:var(--mut);margin:0 2px 18px}
+  .sec{margin-bottom:18px}
+  .sec>h4{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:0 6px 10px}
+  .box{border-radius:22px;background:var(--glass);border:1px solid var(--stroke);overflow:hidden}
+  .it{display:flex;align-items:center;gap:14px;padding:15px 16px;border-bottom:1px solid var(--stroke);width:100%;text-align:left;background:none;border-left:none;border-right:none;border-top:none;font-size:.92rem;text-decoration:none;color:var(--ink)}
+  .it:last-child{border-bottom:none}
+  .it .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--glass2);flex-shrink:0;font-size:1.05rem}
+  .it .tx{flex:1;min-width:0}
+  .it .tx small{display:block;font-size:.76rem;color:var(--mut);margin-top:2px}
+  .it .rt{font-size:.8rem;color:var(--mut);font-weight:600}
+  .it .chev{color:var(--dim)}
+  .it.tog-it input{appearance:none;width:50px;height:30px;border-radius:99px;background:var(--glass2);position:relative;transition:.2s;margin:0;flex-shrink:0}
+  .it.tog-it input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.22s}
+  .it.tog-it input:checked{background:var(--grad)}.it.tog-it input:checked::after{left:23px}
+  .upcard{padding:18px;border-radius:22px;margin-bottom:12px;border:1px solid var(--stroke);
+    background:linear-gradient(160deg,rgba(124,92,255,.22),rgba(34,211,238,.08) 70%)}
+  .upcard .vr{display:flex;justify-content:space-between;align-items:center}
+  .upcard .vr b{font-size:1.5rem;letter-spacing:-.03em}
+  .upcard .vr span{font-size:.72rem;font-weight:700;padding:5px 10px;border-radius:9px;background:var(--glass2);color:var(--mut)}
+  .upcard .vr span.ok{color:var(--good);background:rgba(52,211,153,.12)}
+  .upcard .vr span.new{color:#0b0c10;background:var(--a2)}
+  .upcard p{margin:10px 0 0;font-size:.84rem;color:var(--mut);line-height:1.45}
+  .upcard .notes{margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.28);font-size:.82rem;color:var(--mut);white-space:pre-wrap;max-height:160px;overflow:auto}
+  .ubtns{display:flex;gap:10px;margin-top:14px}
+  .ubtns>*{flex:1;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:.9rem;text-decoration:none}
+  .ubtns .sec-b{border:1px solid var(--stroke);background:var(--glass);color:var(--ink)}
+  .ubtns .pri-b{border:none;background:var(--grad);color:#fff}
+  .spin{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:sp .7s linear infinite;display:none}
+  .busy .spin{display:inline-block}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;transition:.25s;z-index:20;
+    padding:12px 18px;border-radius:14px;background:#1f2130;border:1px solid var(--stroke);font-size:.85rem;font-weight:600;pointer-events:none;white-space:nowrap}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  /* Assistant IA */
+  .chat{padding:6px 0 160px}
+  .bub{max-width:88%;padding:12px 15px;border-radius:20px;margin:8px 0;font-size:.9rem;line-height:1.5;word-wrap:break-word;animation:in .25s both}
+  .bub.u{margin-left:auto;background:var(--grad);color:#fff;border-bottom-right-radius:6px}
+  .bub.a{background:var(--glass2);border:1px solid var(--stroke);border-bottom-left-radius:6px}
+  .bub.a b{color:#fff}
+  .bub.sys{max-width:100%;text-align:center;background:none;color:var(--mut);font-size:.8rem}
+  .typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mut);margin:0 2px;animation:tp 1s infinite}
+  .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+  @keyframes tp{50%{opacity:.25;transform:translateY(-3px)}}
+  .sugg{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .sugg button{padding:10px 14px;border-radius:14px;border:1px solid var(--stroke);background:var(--glass);font-size:.82rem;color:var(--ink);text-align:left}
+  .cbar{position:fixed;left:0;right:0;bottom:calc(80px + env(safe-area-inset-bottom));z-index:6;max-width:720px;margin:auto;padding:0 18px}
+  .cbar form{display:flex;gap:8px;align-items:flex-end;padding:6px 6px 6px 16px;border-radius:20px;background:rgba(20,21,28,.92);border:1px solid var(--stroke);backdrop-filter:blur(20px)}
+  .cbar textarea{flex:1;border:none;background:none;color:var(--ink);font:inherit;font-size:.95rem;resize:none;outline:none;max-height:120px;padding:10px 0}
+  .cbar button{width:42px;height:42px;border-radius:14px;border:none;background:var(--grad);display:grid;place-items:center;flex-shrink:0}
+  .parts{margin:8px 0;border-radius:18px;border:1px solid var(--stroke);background:var(--glass);overflow:hidden}
+  .parts h5{margin:0;padding:12px 15px;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);border-bottom:1px solid var(--stroke)}
+  .part{display:flex;gap:12px;align-items:center;padding:11px 15px;border-bottom:1px solid var(--stroke);text-decoration:none;color:var(--ink);font-size:.85rem}
+  .part img{width:40px;height:40px;border-radius:9px;object-fit:cover;background:var(--glass2);flex-shrink:0}
+  .part .tx{flex:1;min-width:0}.part .tx small{display:block;color:var(--mut);font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .part b{white-space:nowrap}
+  .ptot{padding:13px 15px;font-size:.88rem;display:flex;justify-content:space-between;gap:10px}
+  .ptot b{color:var(--good)}
+  .ai-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;height:46px;border-radius:15px;border:1px solid rgba(124,92,255,.45);background:rgba(124,92,255,.1);color:#c4b5fd;font-weight:700;font-size:.9rem;width:100%}
+  .usedline{font-size:.76rem;color:var(--mut);margin-top:8px;padding:0 2px}
+  .usedline b{color:var(--ink)}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="vSearch">
   <header>
     <div><div class="hello" id="hello">Réparation d'appareils HS</div><div class="logo">Marge<span>o</span></div></div>
     <button class="mode" id="modeBtn">DÉMO</button>
@@ -190,11 +258,77 @@
   <div id="list"></div>
 </div>
 
+<!-- Onglet Assistant IA -->
+<div class="wrap" id="vAI" hidden>
+  <div class="ptitle">Assistant <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">IA</span></div>
+  <p class="psub">Marges, pannes probables, pièces à commander et prix réels sur eBay.</p>
+  <div class="chat" id="chat"></div>
+  <div class="cbar" id="cbar" hidden>
+    <form id="cform">
+      <textarea id="cin" rows="1" placeholder="Pose ta question…"></textarea>
+      <button aria-label="Envoyer"><svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </form>
+  </div>
+</div>
+
+<!-- Onglet Paramètres -->
+<div class="wrap" id="vSet" hidden>
+  <div class="ptitle">Paramètres</div>
+  <p class="psub">Mises à jour, clés eBay et réglages par défaut.</p>
+
+  <div class="sec"><h4>Mise à jour</h4>
+    <div class="upcard">
+      <div class="vr"><div><div class="hello">Version installée</div><b id="uCur">–</b></div><span id="uBadge">–</span></div>
+      <p id="uStat">Touche « Vérifier » pour chercher une nouvelle version.</p>
+      <div class="notes" id="uNotes" hidden></div>
+      <div class="ubtns">
+        <button class="sec-b" id="uCheck"><span class="spin"></span>Vérifier</button>
+        <a class="pri-b" id="uDl" href="#" hidden>
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>Installer</a>
+      </div>
+    </div>
+    <div class="box">
+      <label class="it tog-it"><span class="ic">🔄</span><span class="tx">Vérifier au démarrage<small>Te prévient quand une nouvelle version sort</small></span><input type="checkbox" id="uAuto"></label>
+      <a class="it" id="uRel" href="#"><span class="ic">📦</span><span class="tx">Toutes les versions<small>Page des releases sur GitHub</small></span><span class="chev">›</span></a>
+    </div>
+  </div>
+
+  <div class="sec"><h4>Compte eBay</h4>
+    <div class="box">
+      <button class="it" id="pKeys"><span class="ic">🔑</span><span class="tx">Clés API eBay<small id="pKeysS">Non configurées · mode démo</small></span><span class="chev">›</span></button>
+      <div class="it"><span class="ic">🌍</span><span class="tx">Site eBay</span><span class="rt" id="pMk">EBAY_FR</span></div>
+    </div>
+  </div>
+
+  <div class="sec"><h4>Assistant IA</h4>
+    <div class="box">
+      <button class="it" id="pAI"><span class="ic">✨</span><span class="tx">Clé API Claude<small id="pAIS">Non configurée</small></span><span class="chev">›</span></button>
+    </div>
+  </div>
+
+  <div class="sec"><h4>Calcul de marge par défaut</h4>
+    <div class="box">
+      <div class="it"><span class="ic">🛠️</span><span class="tx">Réparation</span><span class="rt" id="dRep">20 %</span></div>
+      <div class="it"><span class="ic">💶</span><span class="tx">Frais eBay</span><span class="rt" id="dFr">13 % + 0,35 €</span></div>
+      <button class="it" id="dSave"><span class="ic">💾</span><span class="tx">Garder les réglages actuels<small>Utilise les valeurs des filtres comme défaut</small></span><span class="chev">›</span></button>
+    </div>
+  </div>
+
+  <div class="sec"><h4>Données</h4>
+    <div class="box">
+      <button class="it" id="pCache"><span class="ic">🧹</span><span class="tx">Vider le cache des prix<small>Recalcule les prix de revente à la prochaine recherche</small></span><span class="chev">›</span></button>
+      <a class="it" id="pRepo" href="#"><span class="ic">💻</span><span class="tx">Code source<small>Dépôt GitHub de l'appli</small></span><span class="chev">›</span></a>
+    </div>
+  </div>
+</div>
+
 <nav>
   <button class="on" id="navS" aria-label="Recherche"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
   <button id="navF" aria-label="Filtres"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
-  <button id="navK" aria-label="Clés eBay"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.2-8.2M16 7l3 3M14 9l2 2"/></svg></button>
+  <button id="navA" aria-label="Assistant IA"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.4l-1.8-4.9L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+  <button id="navP" aria-label="Paramètres"><span class="nd"></span><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </nav>
+<div class="toast" id="toast"></div>
 
 <div class="ov" id="ov"></div>
 
@@ -237,6 +371,18 @@
   </div>
   <div id="kMsg" class="kmsg"></div>
   <div class="acts"><button class="ghost" id="kDel">Effacer</button><button class="pri" id="kSave">Enregistrer et tester</button></div>
+</div>
+
+<!-- Clé IA -->
+<div class="sheet" id="shA">
+  <div class="grab"></div>
+  <h3>Clé API Claude</h3>
+  <p class="s">L'assistant utilise l'IA Claude. Crée une clé sur <b>console.anthropic.com</b> (menu API Keys), puis colle-la ici. Elle reste sur ton téléphone. Chaque question est facturée par Anthropic sur ton compte, quelques centimes au plus.</p>
+  <div class="grp">
+    <div class="inp"><span>Clé API (commence par sk-ant-)</span><input id="aKey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+  </div>
+  <div id="aMsg" class="kmsg"></div>
+  <div class="acts"><button class="ghost" id="aDel">Effacer</button><button class="pri" id="aSave">Enregistrer et tester</button></div>
 </div>
 
 <script>
@@ -308,9 +454,13 @@ const cache={};
 async function revente(it){
   const k=it.epid||propre(it.title);
   if(k in cache) return cache[k];
-  const ok=await ebaySearch(it.epid?{epid:it.epid,cond:OK,limit:20}:{q:k,cond:OK,limit:20});
-  const px=ok.map(prixDe).filter(v=>v>0);
-  return cache[k]= px.length>=3?{v:mediane(px),nb:px.length}:{v:null,nb:px.length};
+  const base=it.epid?{epid:it.epid}:{q:k};
+  // 1) Prix réels en occasion (état « Occasion » uniquement)
+  let px=(await ebaySearch({...base,cond:"3000",limit:30})).map(prixDe).filter(v=>v>0);
+  if(px.length>=3) return cache[k]={v:mediane(px),nb:px.length,occ:true,min:Math.min(...px),max:Math.max(...px)};
+  // 2) Pas assez d'occasion : on élargit (reconditionné, comme neuf…)
+  px=(await ebaySearch({...base,cond:OK,limit:20})).map(prixDe).filter(v=>v>0);
+  return cache[k]= px.length>=3?{v:mediane(px),nb:px.length,occ:false,min:Math.min(...px),max:Math.max(...px)}:{v:null,nb:px.length};
 }
 
 let busy=false;
@@ -327,7 +477,7 @@ async function liveSearch(){
       const r=await Promise.all(lot.map(it=>revente(it).catch(()=>({v:null}))));
       lot.forEach((it,j)=>{ if(r[j].v) out.push({
         t:it.title,url:it.itemWebUrl,img:(it.image||{}).imageUrl,ico:ICO[st.cat]||"🔧",
-        achat:prixDe(it),port:portDe(it),revente:r[j].v,nb:r[j].nb,
+        achat:prixDe(it),port:portDe(it),revente:r[j].v,nb:r[j].nb,occ:r[j].occ,min:r[j].min,max:r[j].max,
         type:(it.buyingOptions||[]).includes("AUCTION")?"AUCTION":"FIXED_PRICE",
         fr:(it.itemLocation||{}).country==="FR"});});
       n+=lot.length; prog(true,`Analyse des prix de revente… ${n}/${items.length}`,10+90*n/items.length);
@@ -347,7 +497,7 @@ function setMode(){
   $("modeBtn").textContent=st.live?"● EN DIRECT":"DÉMO";$("modeBtn").classList.toggle("live",st.live);
   $("hello").textContent=st.live?"Annonces eBay en cours":"Démo · fausses annonces";
   if(st.live){st.raw=[];showMsg("info","Tape un appareil puis valide pour chercher les meilleures marges.");}
-  else{st.raw=DEMO;showMsg();}
+  else{st.raw=DEMO.map(d=>({...d,occ:true,min:Math.round(d.revente*.78),max:Math.round(d.revente*1.3)}));showMsg();}
   render();
 }
 
@@ -360,13 +510,29 @@ seg($("sort"),"sort",render);
 
 let openSheet=null;
 function sheet(id){if(openSheet)$(openSheet).classList.remove("show");openSheet=id;if(id)$(id).classList.add("show");$("ov").classList.toggle("show",!!id);}
-window.onBack=()=>{if(openSheet){sheet(null);return true}return false};
-$("openF").onclick=$("navF").onclick=()=>sheet("shF");
-$("navK").onclick=$("modeBtn").onclick=()=>{$("kId").value=keys().id;$("kSec").value="";$("kSec").placeholder=keys().sec?"Déjà enregistré – laisser vide pour garder":"";$("kMk").value=keys().mk;$("kMsg").className="kmsg";sheet("shK");};
-$("navS").onclick=()=>{sheet(null);window.scrollTo({top:0,behavior:"smooth"});$("q").focus();};
+/* ---------- Onglets ---------- */
+let curView="vSearch";
+function view(v){
+  curView=v;["vSearch","vAI","vSet"].forEach(x=>$(x).hidden=x!==v);
+  $("cbar").hidden=v!=="vAI";
+  [["navS","vSearch"],["navA","vAI"],["navP","vSet"]].forEach(([b,x])=>$(b).classList.toggle("on",x===v));
+  $("navF").classList.remove("on");window.scrollTo(0,0);
+  if(v==="vSet") refreshSettings();
+  if(v==="vAI") chatInit();
+}
+window.onBack=()=>{if(openSheet){sheet(null);return true}if(curView!=="vSearch"){view("vSearch");return true}return false};
+const openKeys=()=>{$("kId").value=keys().id;$("kSec").value="";$("kSec").placeholder=keys().sec?"Déjà enregistré – laisser vide pour garder":"";$("kMk").value=keys().mk;$("kMsg").className="kmsg";sheet("shK");};
+$("openF").onclick=()=>sheet("shF");
+$("navF").onclick=()=>{view("vSearch");sheet("shF");};
+$("modeBtn").onclick=$("pKeys").onclick=openKeys;
+$("navS").onclick=()=>{sheet(null);if(curView!=="vSearch")view("vSearch");else{window.scrollTo({top:0,behavior:"smooth"});$("q").focus();}};
+$("navA").onclick=()=>{sheet(null);view("vAI");};
+$("navP").onclick=()=>{sheet(null);view("vSet");};
 $("ov").onclick=()=>sheet(null);
 $("closeF").onclick=()=>{sheet(null);if(st.live&&($("q").value.trim()||st.cat))liveSearch();};
-$("reset").onclick=()=>{$("pmax").value=$("mmin").value="";$("frOnly").checked=false;$("rep").value=20;$("fr").value=13;$("fx").value=.35;$("type").querySelector("button").click();render();};
+const defs=()=>({rep:+store.get("d_rep","20"),fr:+store.get("d_fr","13"),fx:+store.get("d_fx","0.35")});
+function applyDefs(){const d=defs();$("rep").value=d.rep;$("fr").value=d.fr;$("fx").value=d.fx;}
+$("reset").onclick=()=>{$("pmax").value=$("mmin").value="";$("frOnly").checked=false;applyDefs();$("type").querySelector("button").click();render();};
 $("sform").onsubmit=e=>{e.preventDefault();$("q").blur();st.live?liveSearch():render();};
 $("q").addEventListener("input",()=>{if(!st.live)render();});
 ["mmin","rep","fr","fx"].forEach(id=>$(id).addEventListener("input",render));
@@ -384,7 +550,7 @@ $("kSave").onclick=async()=>{
 $("kDel").onclick=()=>{["ebay_id","ebay_sec","ebay_mk"].forEach(store.del);tok={v:null,exp:0};$("kId").value=$("kSec").value="";$("kMsg").className="kmsg ok";$("kMsg").textContent="Clés effacées, retour au mode démo.";setMode();};
 
 function badge(){
-  const n=[$("pmax").value!=="",$("mmin").value!=="",!!st.type,$("frOnly").checked,+$("rep").value!==20,+$("fr").value!==13,+$("fx").value!==.35].filter(Boolean).length;
+  const d=defs(),n=[$("pmax").value!=="",$("mmin").value!=="",!!st.type,$("frOnly").checked,+$("rep").value!==d.rep,+$("fr").value!==d.fr,+$("fx").value!==d.fx].filter(Boolean).length;
   $("openF").classList.toggle("on",n>0);$("fCount").textContent=n;
 }
 
@@ -404,6 +570,7 @@ function render(){
   $("sNb").textContent=res.filter(d=>d.m>0).length;
   $("sMoy").textContent=res.length?eur(res.reduce((s,d)=>s+d.m,0)/res.length):"–";
   $("count").textContent=res.length+" annonce"+(res.length>1?"s":"");
+  st.shown=res;
 
   $("list").innerHTML=res.length?res.map((d,i)=>{
     const c=d.m<0?"var(--bad)":d.p<50?"var(--mid)":"var(--good)",v=Math.max(4,Math.min(100,d.p/2)),w=x=>Math.max(0,x/d.revente*100);
@@ -411,25 +578,164 @@ function render(){
       <div class="row">
         <div class="ring" style="--v:${v};--c:${c}"><div>${d.img?`<img src="${esc(d.img)}" loading="lazy" alt="">`:d.ico}</div></div>
         <div class="info"><div class="t">${esc(d.t)}</div>
-          <div class="meta"><span class="${d.type==="AUCTION"?"auc":""}">${d.type==="AUCTION"?"Enchères":"Achat immédiat"}</span><span>${d.fr?"France":"Étranger"}</span><span>${d.nb} comparables</span></div></div>
+          <div class="meta"><span class="${d.type==="AUCTION"?"auc":""}">${d.type==="AUCTION"?"Enchères":"Achat immédiat"}</span><span>${d.fr?"France":"Étranger"}</span><span>${d.nb} ${d.occ?"en occasion":"comparables"}</span></div></div>
         <div class="val"><b style="color:${c}">${d.m>=0?"+":""}${eur(d.m)}</b><small style="color:${c}">${Math.round(d.p)} %</small></div>
       </div>
-      <div class="flow"><span>Achat</span><b>${eur(d.a)}</b><div class="arr"></div><span>Revente</span><b>${eur(d.revente)}</b></div>
+      <div class="flow"><span>Achat</span><b>${eur(d.a)}</b><div class="arr"></div><span>${d.occ?"Revente occasion":"Revente"}</span><b>${eur(d.revente)}</b></div>
+      ${d.min!=null?`<div class="usedline">Prix ${d.occ?"en occasion":"constatés (pas assez d'occasion)"} : <b>${eur(d.min)} – ${eur(d.max)}</b> sur ${d.nb} annonces en cours</div>`:""}
       <div class="detail"><div>
         <div class="stack"><i class="c-a" style="flex:${w(d.a)}"></i><i class="c-r" style="flex:${w(d.r)}"></i><i class="c-f" style="flex:${w(d.f)}"></i><i class="c-m" style="flex:${w(d.m)}"></i></div>
         <div class="lines">
-          <div><span>Revente estimée (médiane)</span><b>${eur(d.revente,2)}</b></div>
+          <div><span>Revente ${d.occ?"occasion":"estimée"} (médiane)</span><b>${eur(d.revente,2)}</b></div>
           <div><span><i class="dot c-a"></i>Achat ${eur(d.achat,2)} + port ${eur(d.port,2)}</span><b>− ${eur(d.a,2)}</b></div>
           <div><span><i class="dot c-r"></i>Réparation (${rep} %)</span><b>− ${eur(d.r,2)}</b></div>
           <div><span><i class="dot c-f"></i>Frais eBay (${fr} % + ${eur(fx,2)})</span><b>− ${eur(d.f,2)}</b></div>
           <div class="tot"><span><i class="dot c-m"></i>Marge nette</span><b style="color:${c}">${eur(d.m,2)}</b></div>
         </div>
+        <button class="ai-btn" onclick="event.stopPropagation();analyse(st.shown[${i}])">✨ Analyser avec l'IA · pièces et prix</button>
         <a class="cta" href="${d.url?esc(d.url):"#"}" onclick="event.stopPropagation();${d.url?"":"return false"}">Voir sur eBay
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
       </div></div>
     </div>`}).join(""):(busy?"":`<div class="empty"><b>🔍</b>${st.live?"Lance une recherche pour voir les affaires.":"Aucune affaire avec ces filtres."}</div>`);
 }
+/* ---------- Mises à jour (GitHub Releases) ---------- */
+const REPO="simonpst02-beep/Marge-ebay-";
+const verCode=()=>{try{return window.Native&&Native.version?+Native.version():0}catch(e){return 0}};
+let toastT;
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove("show"),2200);}
+$("uRel").href=`https://github.com/${REPO}/releases`;$("pRepo").href=`https://github.com/${REPO}`;
+async function checkUpdate(manual){
+  const b=$("uCheck");b.classList.add("busy");b.disabled=true;if(manual)$("uStat").textContent="Recherche d'une nouvelle version…";
+  try{
+    const r=await http("GET",`https://api.github.com/repos/${REPO}/releases/latest`,{"Accept":"application/vnd.github+json","User-Agent":"Margeo-app"});
+    const n=parseInt(String(r.tag_name||"").replace(/\D/g,""))||0,cur=verCode();
+    const apk=(r.assets||[]).find(a=>/\.apk$/i.test(a.name));
+    const date=r.published_at?new Date(r.published_at).toLocaleDateString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}):"";
+    store.set("u_last",String(Date.now()));
+    if(n>cur&&apk){
+      $("uBadge").textContent="Nouvelle : v"+n;$("uBadge").className="new";
+      $("uStat").textContent=`La version ${n} est disponible (publiée le ${date}). Touche « Installer » : le fichier se télécharge, puis ouvre-le pour mettre l'appli à jour.`;
+      $("uDl").href=apk.browser_download_url;$("uDl").hidden=false;
+      const notes=(r.body||"").trim();$("uNotes").textContent=notes;$("uNotes").hidden=!notes;
+      $("navP").classList.add("upd");if(!manual)toast("✨ Mise à jour disponible");
+    }else{
+      $("uBadge").textContent="À jour";$("uBadge").className="ok";$("uDl").hidden=true;$("uNotes").hidden=true;
+      $("uStat").textContent=`Tu as la dernière version. Dernière vérification : ${new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}.`;
+      $("navP").classList.remove("upd");if(manual)toast("Tu as la dernière version");
+    }
+  }catch(e){$("uStat").textContent="Impossible de vérifier : "+e.message;}
+  b.classList.remove("busy");b.disabled=false;
+}
+$("uCheck").onclick=()=>checkUpdate(true);
+$("uAuto").checked=store.get("u_auto","1")==="1";
+$("uAuto").onchange=()=>store.set("u_auto",$("uAuto").checked?"1":"0");
+
+function refreshSettings(){
+  const v=verCode();$("uCur").textContent=v?"v"+v:"Navigateur";
+  if($("uBadge").textContent==="–"){$("uBadge").textContent="v"+v;}
+  const k=keys();$("pKeysS").textContent=k.id&&k.sec?"Connecté · App ID "+k.id.slice(0,10)+"…":"Non configurées · mode démo";
+  $("pMk").textContent=k.mk;
+  $("pAIS").textContent=store.get("ai_key")?"Configurée · assistant actif":"Non configurée";
+  const d=defs();$("dRep").textContent=d.rep+" %";$("dFr").textContent=`${d.fr} % + ${eur(d.fx,2)}`;
+}
+$("dSave").onclick=()=>{store.set("d_rep",$("rep").value);store.set("d_fr",$("fr").value);store.set("d_fx",$("fx").value);refreshSettings();badge();toast("Réglages par défaut enregistrés");};
+$("pCache").onclick=()=>{Object.keys(cache).forEach(k=>delete cache[k]);toast("Cache des prix vidé");};
+
+/* ---------- Assistant IA (Claude) ---------- */
+const AI_MODEL="claude-sonnet-5-5";
+const SYS=`Tu es l'assistant de Simon, qui achète des appareils électroniques HS sur eBay, les répare et les revend d'occasion en France.
+Tu l'aides à : estimer les marges, identifier la panne probable d'après le titre de l'annonce, lister les pièces à commander, évaluer la difficulté et le temps de réparation, repérer les pièges (blocage iCloud/compte, carte mère morte, pièces non d'origine, appareils volés).
+Réponds en français, de façon courte et concrète, avec des listes. Mets en gras les chiffres importants.
+Quand tu analyses une annonce précise, termine TOUJOURS ta réponse par un bloc de code json de la forme :
+\`\`\`json
+{"pieces":[{"nom":"Écran OLED iPhone 12","recherche":"ecran oled iphone 12"}]}
+\`\`\`
+avec 1 à 4 pièces à commander, et une "recherche" eBay courte (3 à 6 mots, sans accents). Mets une liste vide si aucune pièce n'est nécessaire.`;
+let chatMsgs=[],chatBusy=false,chatStarted=false;
+const aiKey=()=>store.get("ai_key");
+function md(t){return esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/^#{1,4}\s*(.+)$/gm,"<b>$1</b>").replace(/^[-•]\s+/gm,"• ").replace(/`([^`]+)`/g,"$1").replace(/\n/g,"<br>");}
+function bubble(cls,html){const d=document.createElement("div");d.className="bub "+cls;d.innerHTML=html;$("chat").appendChild(d);d.scrollIntoView({behavior:"smooth",block:"end"});return d;}
+function chatInit(){
+  if(chatStarted)return;chatStarted=true;
+  bubble("a",md(aiKey()?"Salut Simon ! Pose-moi une question sur une réparation ou une marge, ou touche **✨ Analyser avec l'IA** sur une annonce : je trouve la panne probable, les pièces et leur prix sur eBay."
+    :"Pour activer l'assistant, ajoute ta **clé API Claude** dans Paramètres → Assistant IA."));
+  const s=document.createElement("div");s.className="sugg";
+  ["Quelles pannes sont les plus rentables à réparer ?","Comment éviter un iPhone bloqué iCloud ?","Quel % de réparation pour une console ?"]
+    .forEach(q=>{const b=document.createElement("button");b.textContent=q;b.onclick=()=>{s.remove();ask(q);};s.appendChild(b);});
+  $("chat").appendChild(s);
+}
+async function callAI(){
+  const d=await http("POST","https://api.anthropic.com/v1/messages",
+    {"x-api-key":aiKey(),"anthropic-version":"2023-06-01","content-type":"application/json"},
+    JSON.stringify({model:AI_MODEL,max_tokens:1500,system:SYS,messages:chatMsgs}));
+  return (d.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("\n");
+}
+async function ask(text,ctx){
+  if(chatBusy)return;
+  if(!aiKey()){bubble("sys","Ajoute d'abord ta clé API Claude dans Paramètres.");return;}
+  chatBusy=true;bubble("u",esc(ctx?ctx.label:text).replace(/\n/g,"<br>"));
+  chatMsgs.push({role:"user",content:text});
+  const w=bubble("a",'<span class="typing"><span></span><span></span><span></span></span>');
+  try{
+    let rep=await callAI();chatMsgs.push({role:"assistant",content:rep});
+    const m=rep.match(/```json\s*([\s\S]*?)```/);rep=rep.replace(/```json[\s\S]*?```/,"").trim();
+    w.innerHTML=md(rep);
+    if(m){try{const j=JSON.parse(m[1]);if(j.pieces&&j.pieces.length)await findParts(j.pieces,ctx&&ctx.item);}catch(e){}}
+  }catch(e){w.innerHTML="Erreur de l'assistant : "+esc(e.message);chatMsgs.pop();}
+  chatBusy=false;
+}
+async function findParts(pieces,item){
+  const box=document.createElement("div");box.className="parts";
+  box.innerHTML="<h5>🔩 Pièces sur eBay</h5>";$("chat").appendChild(box);
+  if(!st.live){box.innerHTML+=`<div class="ptot"><span>Ajoute tes clés eBay pour voir les vrais prix des pièces.</span></div>`;return;}
+  const line=document.createElement("div");line.className="ptot";line.innerHTML="<span>Recherche des prix…</span>";box.appendChild(line);
+  let tot=0,found=0;
+  for(const p of pieces.slice(0,4)){
+    try{
+      const r=(await ebaySearch({q:p.recherche,cond:"1000|1500|2500|3000",limit:15})).filter(i=>prixDe(i)>0)
+        .sort((a,b)=>(prixDe(a)+portDe(a))-(prixDe(b)+portDe(b)));
+      const it=r[0];
+      const a=document.createElement("a");a.className="part";
+      if(it){const c=prixDe(it)+portDe(it);tot+=c;found++;a.href=it.itemWebUrl||"#";
+        a.innerHTML=`${(it.image||{}).imageUrl?`<img src="${esc(it.image.imageUrl)}" alt="">`:'<img alt="">'}<span class="tx">${esc(p.nom)}<small>${esc(it.title)}</small></span><b>${eur(c,2)}</b>`;}
+      else{a.href="#";a.innerHTML=`<img alt=""><span class="tx">${esc(p.nom)}<small>Introuvable sur eBay</small></span><b>–</b>`;}
+      box.insertBefore(a,line);
+    }catch(e){}
+  }
+  if(found&&item){
+    const m=item.revente-item.a-tot-item.f;
+    line.innerHTML=`<span>Pièces : <b style="color:var(--ink)">${eur(tot,2)}</b><br>Marge réelle avec ces pièces</span><b style="color:${m<0?"var(--bad)":"var(--good)"}">${eur(m,2)}</b>`;
+  }else line.innerHTML=found?`<span>Total des pièces</span><b>${eur(tot,2)}</b>`:"<span>Aucune pièce trouvée.</span>";
+  box.scrollIntoView({behavior:"smooth",block:"end"});
+}
+function analyse(d){
+  view("vAI");
+  const txt=`Analyse cette annonce eBay d'appareil HS :
+Titre : ${d.t}
+Prix d'achat : ${eur(d.achat,2)} + port ${eur(d.port,2)}
+Prix de revente en ${d.occ?"occasion":"état de marche"} (médiane de ${d.nb} annonces) : ${eur(d.revente,2)} (fourchette ${eur(d.min||0)} – ${eur(d.max||0)})
+Frais eBay estimés : ${eur(d.f,2)}
+Donne : la panne probable, les pièces à changer, la difficulté (1 à 5), le temps estimé, les risques, et la marge réaliste. Dis-moi si ça vaut le coup.`;
+  ask(txt,{label:"✨ Analyse : "+d.t,item:d});
+}
+$("cform").onsubmit=e=>{e.preventDefault();const t=$("cin").value.trim();if(!t)return;$("cin").value="";$("cin").style.height="";ask(t);};
+$("cin").addEventListener("input",()=>{const c=$("cin");c.style.height="";c.style.height=Math.min(c.scrollHeight,120)+"px";});
+$("pAI").onclick=()=>{$("aKey").value="";$("aKey").placeholder=aiKey()?"Déjà enregistrée – laisser vide pour garder":"";$("aMsg").className="kmsg";sheet("shA");};
+$("aSave").onclick=async()=>{
+  const k=$("aKey").value.trim()||aiKey();if(!k){$("aMsg").className="kmsg ko";$("aMsg").textContent="Colle ta clé API.";return;}
+  store.set("ai_key",k);$("aSave").disabled=true;$("aSave").textContent="Test en cours…";
+  try{await http("POST","https://api.anthropic.com/v1/messages",{"x-api-key":k,"anthropic-version":"2023-06-01","content-type":"application/json"},
+      JSON.stringify({model:AI_MODEL,max_tokens:5,messages:[{role:"user",content:"ok"}]}));
+    $("aMsg").className="kmsg ok";$("aMsg").textContent="Assistant activé.";setTimeout(()=>sheet(null),900);}
+  catch(e){$("aMsg").className="kmsg ko";$("aMsg").textContent="Échec : "+e.message;}
+  $("aSave").disabled=false;$("aSave").textContent="Enregistrer et tester";refreshSettings();
+};
+$("aDel").onclick=()=>{store.del("ai_key");$("aMsg").className="kmsg ok";$("aMsg").textContent="Clé effacée.";refreshSettings();};
+
+applyDefs();
 setMode();
+refreshSettings();
+if(window.Native&&store.get("u_auto","1")==="1") setTimeout(()=>checkUpdate(false),1500);
 </script>
 </body>
 </html>
