@@ -12,10 +12,34 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build:
+  tests:
+    name: Tester l'interface
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer le navigateur de test
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Lancer les tests
+        run: python tests/test_ui.py
+
+  build:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Clé de signature : prise dans les secrets GitHub si elle y est, sinon dans le dépôt
+      - name: Préparer la clé de signature
+        env:
+          KEYSTORE_B64: ${{ secrets.MARGEO_KEYSTORE }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then echo "$KEYSTORE_B64" | base64 -d > app/margeo.keystore; fi
+          test -f app/margeo.keystore
 
       - uses: actions/setup-java@v5
         with:
@@ -27,6 +51,8 @@ jobs:
           gradle-version: '8.9'
 
       - name: Compiler l'APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.MARGEO_KEYSTORE_PASSWORD }}
         run: gradle assembleDebug --no-daemon
 
       - name: Renommer l'APK

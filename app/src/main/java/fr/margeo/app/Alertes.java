@@ -52,7 +52,8 @@ public class Alertes {
             JSONObject cfg = new JSONObject(ctx.getSharedPreferences(PREFS, 0).getString("cfg", "{}"));
             JSONArray al = cfg.optJSONArray("alerts");
             actif = cfg.optBoolean("alertsOn", true) && al != null && al.length() > 0
-                    && !cfg.optString("id").isEmpty() && !cfg.optString("sec").isEmpty();
+                    && !cfg.optString("id").isEmpty()
+                    && !(Secrets.get(ctx, "ebay_sec").isEmpty() && cfg.optString("sec").isEmpty());
         } catch (Exception ignored) { }
         if (!actif) { js.cancel(JOB_ID); return; }
         JobInfo job = new JobInfo.Builder(JOB_ID, new ComponentName(ctx, AlertJob.class))
@@ -67,16 +68,20 @@ public class Alertes {
 
     /** Lance toutes les alertes. Renvoie un résumé JSON {ok, trouves, erreur, quand}. */
     static synchronized String lancer(Context ctx) {
+        appCtx = ctx.getApplicationContext();
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, 0);
         JSONObject res = new JSONObject();
         int trouves = 0;
         String erreur = "";
         try {
             JSONObject cfg = new JSONObject(sp.getString("cfg", "{}"));
-            String id = cfg.optString("id"), sec = cfg.optString("sec"), mk = cfg.optString("mk", "EBAY_FR");
+            String id = cfg.optString("id"), mk = cfg.optString("mk", "EBAY_FR");
+            String sec = Secrets.get(ctx, "ebay_sec");
+            if (sec.isEmpty()) sec = cfg.optString("sec");
             double rep = cfg.optDouble("rep", 20), fr = cfg.optDouble("fr", 13), fx = cfg.optDouble("fx", 0.35);
             JSONArray alertes = cfg.optJSONArray("alerts");
             if (id.isEmpty() || sec.isEmpty() || alertes == null) throw new Exception("Clés eBay ou alertes manquantes");
+            if (Journal.utilise(ctx) > 4000) throw new Exception("Quota eBay presque atteint aujourd'hui (" + Journal.utilise(ctx) + "/5000) : alertes en pause jusqu'à demain");
 
             JSONObject vus = new JSONObject(sp.getString("vus", "{}"));
             String tok = token(id, sec);
@@ -129,6 +134,7 @@ public class Alertes {
             sp.edit().putString("vus", garde.toString()).apply();
         } catch (Exception e) {
             erreur = String.valueOf(e.getMessage());
+            Journal.noter(ctx, "Alertes : " + erreur);
         }
         try {
             res.put("ok", erreur.isEmpty());
@@ -170,6 +176,8 @@ public class Alertes {
     }
 
     // ---------- eBay ----------
+
+    static Context appCtx;
 
     static String token(String id, String sec) throws Exception {
         String auth = Base64.encodeToString((id + ":" + sec).getBytes("UTF-8"), Base64.NO_WRAP);
@@ -255,6 +263,7 @@ public class Alertes {
             o.close();
         }
         int code = c.getResponseCode();
+        if (appCtx != null && url.startsWith(API)) Journal.compter(appCtx, 1);
         InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
         StringBuilder sb = new StringBuilder();
         if (in != null) {

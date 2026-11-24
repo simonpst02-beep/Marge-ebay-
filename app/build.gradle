@@ -21,9 +21,9 @@ android {
     signingConfigs {
         fixe {
             storeFile file('margeo.keystore')
-            storePassword 'margeo123'
+            storePassword System.getenv("KEYSTORE_PASSWORD") ?: 'margeo123'
             keyAlias 'margeo'
-            keyPassword 'margeo123'
+            keyPassword System.getenv("KEYSTORE_PASSWORD") ?: 'margeo123'
         }
     }
 

@@ -14,6 +14,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import java.util.ArrayList;
+import java.util.Locale;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -39,6 +43,32 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> fichiers;
     private static final int CHOIX_FICHIER = 7;
     private boolean installEnAttente = false;
+    private static final int VOIX = 8;
+    private TextToSpeech tts;
+    private boolean ttsPret = false;
+    private String partage = null;
+
+    /** Texte reçu via « Partager » (lien d'annonce eBay). */
+    private void lirePartage(Intent i) {
+        if (i == null || !Intent.ACTION_SEND.equals(i.getAction())) return;
+        String t = i.getStringExtra(Intent.EXTRA_TEXT);
+        if (t == null || t.isEmpty()) return;
+        partage = t;
+        if (web != null) rappel("window.__partage && window.__partage(" + JSONObject.quote(t) + ")");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        lirePartage(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tts != null) tts.shutdown();
+        super.onDestroy();
+    }
 
     @Override
     protected void onResume() {
@@ -70,6 +100,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == VOIX) {
+            String texte = "";
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> r = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (r != null && !r.isEmpty()) texte = r.get(0);
+            }
+            rappel("window.__voix && window.__voix(" + JSONObject.quote(texte) + ")");
+            return;
+        }
         if (requestCode != CHOIX_FICHIER || fichiers == null) return;
         Uri[] res = null;
         if (resultCode == RESULT_OK && data != null) {
@@ -88,6 +127,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Journal.surveiller(getApplicationContext());
+        partage = null;
+        Intent recu = getIntent();
+        if (recu != null && Intent.ACTION_SEND.equals(recu.getAction())) partage = recu.getStringExtra(Intent.EXTRA_TEXT);
         int fond = Color.parseColor("#07080c");
         getWindow().setStatusBarColor(fond);
         getWindow().setNavigationBarColor(fond);
@@ -253,6 +296,113 @@ public class MainActivity extends Activity {
                 i.putExtra(Intent.EXTRA_TEXT, texte);
                 startActivity(Intent.createChooser(i, titre));
             });
+        }
+
+        /** Coffre-fort chiffré pour les clés. */
+        @JavascriptInterface
+        public void secretSet(String nom, String valeur) { Secrets.set(getApplicationContext(), nom, valeur); }
+
+        @JavascriptInterface
+        public String secretGet(String nom) { return Secrets.get(getApplicationContext(), nom); }
+
+        /** Journal d'erreurs Android. */
+        @JavascriptInterface
+        public String journal() { return Journal.lire(getApplicationContext()); }
+
+        @JavascriptInterface
+        public void journalEffacer() { Journal.effacer(getApplicationContext()); }
+
+        /** Compteur de requêtes eBay du jour (partagé avec les alertes). */
+        @JavascriptInterface
+        public int quotaAdd(int n) { return Journal.compter(getApplicationContext(), n); }
+
+        /** Infos sur l'appareil, pour le journal. */
+        @JavascriptInterface
+        public String appareil() { return Build.MANUFACTURER + " " + Build.MODEL + " · Android " + Build.VERSION.RELEASE; }
+
+        /** Couleur des barres système selon le thème (icônes foncées en thème clair). */
+        @JavascriptInterface
+        public void setBars(final String couleur, final boolean clair) {
+            runOnUiThread(() -> {
+                try {
+                    int c = Color.parseColor(couleur);
+                    getWindow().setStatusBarColor(c);
+                    getWindow().setNavigationBarColor(c);
+                    web.setBackgroundColor(c);
+                    int f = getWindow().getDecorView().getSystemUiVisibility();
+                    int lum = android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                            | (Build.VERSION.SDK_INT >= 26 ? android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0);
+                    getWindow().getDecorView().setSystemUiVisibility(clair ? (f | lum) : (f & ~lum));
+                } catch (Exception ignored) { }
+            });
+        }
+
+        /** Texte partagé au lancement de l'appli (lu une seule fois). */
+        @JavascriptInterface
+        public String sharedText() { String t = partage; partage = null; return t == null ? "" : t; }
+
+        /** Suit les redirections d'un lien court (ebay.us…) et renvoie l'adresse finale. */
+        @JavascriptInterface
+        public void resolve(final String id, final String url) {
+            new Thread(() -> {
+                String u = url;
+                try {
+                    for (int i = 0; i < 6; i++) {
+                        HttpURLConnection c = (HttpURLConnection) new URL(u).openConnection();
+                        c.setInstanceFollowRedirects(false);
+                        c.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android) Margeo");
+                        c.setConnectTimeout(10000);
+                        c.setReadTimeout(10000);
+                        int code = c.getResponseCode();
+                        String loc = c.getHeaderField("Location");
+                        c.disconnect();
+                        if (code < 300 || code >= 400 || loc == null) break;
+                        u = new URL(new URL(u), loc).toString();
+                    }
+                } catch (Exception ignored) { }
+                String json;
+                try { json = new JSONObject().put("url", u).toString(); } catch (Exception e) { json = "{}"; }
+                rappel("window.__native(" + JSONObject.quote(id) + ",200," + JSONObject.quote(json) + ")");
+            }).start();
+        }
+
+        /** Dictée vocale (reconnaissance vocale d'Android). */
+        @JavascriptInterface
+        public void listen() {
+            runOnUiThread(() -> {
+                Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "fr-FR");
+                i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pose ta question à Margeo");
+                try {
+                    startActivityForResult(i, VOIX);
+                } catch (Exception e) {
+                    rappel("window.__voix && window.__voix(null)");
+                }
+            });
+        }
+
+        /** Lecture à voix haute (synthèse vocale d'Android). */
+        @JavascriptInterface
+        public void speak(final String texte) {
+            runOnUiThread(() -> {
+                if (tts == null) {
+                    tts = new TextToSpeech(MainActivity.this, st -> {
+                        if (st == TextToSpeech.SUCCESS) {
+                            tts.setLanguage(Locale.FRANCE);
+                            ttsPret = true;
+                            tts.speak(texte, TextToSpeech.QUEUE_FLUSH, null, "margeo");
+                        }
+                    });
+                } else if (ttsPret) {
+                    tts.speak(texte, TextToSpeech.QUEUE_FLUSH, null, "margeo");
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void stopSpeak() {
+            runOnUiThread(() -> { if (tts != null) tts.stop(); });
         }
 
         /** Met à jour le widget d'écran d'accueil. */

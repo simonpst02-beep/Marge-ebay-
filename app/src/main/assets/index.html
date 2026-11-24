@@ -11,15 +11,29 @@
     --ink:#f4f5fb;--mut:#8b8fa3;--dim:#5b5f73;
     --a1:#7c5cff;--a2:#22d3ee;--grad:linear-gradient(135deg,var(--a1),var(--a2));
     --good:#34d399;--mid:#fbbf24;--bad:#fb7185;
+    --surf:#111219;--nav:rgba(20,21,28,.82);--ring:#0f1016;--kpi:rgba(7,8,12,.45);--sunk:rgba(0,0,0,.28);--toast:#1f2130;--acc-t:#c4b5fd;--blob:.35;--strong:#fff;
   }
+  :root[data-theme=light]{
+    --bg:#f3f4f9;--glass:rgba(20,22,40,.035);--glass2:rgba(20,22,40,.07);--stroke:rgba(20,22,40,.11);
+    --ink:#14151f;--mut:#5b6073;--dim:#8a8fa3;
+    --good:#059669;--mid:#b45309;--bad:#e11d48;
+    --surf:#ffffff;--nav:rgba(255,255,255,.88);--ring:#ffffff;--kpi:rgba(255,255,255,.7);--sunk:rgba(20,22,40,.05);--toast:#ffffff;--acc-t:#6d28d9;--blob:.16;--strong:#14151f;
+  }
+  :root[data-accent=sunset]{--a1:#f97316;--a2:#ec4899}
+  :root[data-accent=emerald]{--a1:#10b981;--a2:#06b6d4}
+  :root[data-accent=ocean]{--a1:#2563eb;--a2:#38bdf8}
+  :root[data-accent=mono]{--a1:#6b7280;--a2:#a1a1aa}
+  :root[data-size=large]{font-size:18px}
+  :root[data-size=small]{font-size:14.5px}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   [hidden]{display:none!important}
   html,body{margin:0;background:var(--bg);color:var(--ink)}
   body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;
     padding-bottom:calc(96px + env(safe-area-inset-bottom));overflow-x:hidden}
-  body::before,body::after{content:"";position:fixed;z-index:-1;width:520px;height:520px;border-radius:50%;filter:blur(90px);opacity:.35;pointer-events:none}
+  body::before,body::after{content:"";position:fixed;z-index:-1;width:520px;height:520px;border-radius:50%;filter:blur(90px);opacity:var(--blob);pointer-events:none}
   body::before{background:var(--a1);top:-220px;left:-180px}
-  body::after{background:var(--a2);top:120px;right:-260px;opacity:.18}
+  body::after{background:var(--a2);top:120px;right:-260px;opacity:calc(var(--blob)*.5)}
+  body,.card,.box,.sheet,nav,.sbox,.chip,.kpi{transition:background-color .25s,border-color .25s,color .25s}
   .wrap{max-width:720px;margin:auto;padding:0 18px}
   button{font:inherit;color:inherit;cursor:pointer}
   .grad-t{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -27,11 +41,11 @@
   header{padding:22px 0 6px;display:flex;justify-content:space-between;align-items:center}
   .hello{font-size:.8rem;color:var(--mut)}
   .logo{font-size:1.55rem;font-weight:800;letter-spacing:-.04em;margin-top:2px}
-  .mode{height:32px;padding:0 12px;border-radius:11px;background:var(--glass2);border:1px solid var(--stroke);font-size:.7rem;font-weight:800;letter-spacing:.08em;color:var(--mid)}
+  .mode{color:var(--mid);height:32px;padding:0 12px;border-radius:11px;background:var(--glass2);border:1px solid var(--stroke);font-size:.7rem;font-weight:800;letter-spacing:.08em;color:var(--mid)}
   .mode.live{color:var(--good)}
 
   .hero{position:relative;margin:18px 0 16px;padding:22px;border-radius:28px;overflow:hidden;
-    background:linear-gradient(160deg,rgba(124,92,255,.28),rgba(34,211,238,.10) 60%,rgba(255,255,255,.02));border:1px solid var(--stroke)}
+    background:linear-gradient(160deg,color-mix(in srgb,var(--a1) 28%,transparent),color-mix(in srgb,var(--a2) 10%,transparent) 60%,rgba(255,255,255,.02));border:1px solid var(--stroke)}
   .hero .lbl{font-size:.78rem;color:var(--mut);display:flex;align-items:center;gap:8px}
   .pulse{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(52,211,153,.18);animation:p 2s infinite}
   @keyframes p{50%{box-shadow:0 0 0 7px rgba(52,211,153,0)}}
@@ -39,13 +53,13 @@
   .big small{font-size:1rem;font-weight:600;color:var(--mut);letter-spacing:0;margin-left:6px}
   .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
   .kpis.k3{grid-template-columns:1fr 1fr 1fr}
-  .kpi{background:rgba(7,8,12,.45);border:1px solid var(--stroke);border-radius:18px;padding:12px 14px}
+  .kpi{background:var(--kpi);border:1px solid var(--stroke);border-radius:18px;padding:12px 14px}
   .kpi span{font-size:.72rem;color:var(--mut)}
   .kpi b{display:block;font-size:1.2rem;font-weight:750;letter-spacing:-.03em;margin-top:2px}
 
   .search{position:sticky;top:0;z-index:6;padding:10px 18px;margin:0 -18px;background:linear-gradient(var(--bg) 70%,transparent)}
   .sbox{display:flex;align-items:center;gap:10px;height:54px;padding:0 8px 0 18px;border-radius:18px;background:var(--glass2);border:1px solid var(--stroke);backdrop-filter:blur(20px)}
-  .sbox:focus-within{border-color:rgba(124,92,255,.6);box-shadow:0 0 0 4px rgba(124,92,255,.15)}
+  .sbox:focus-within{border-color:color-mix(in srgb,var(--a1) 60%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,var(--a1) 15%,transparent)}
   .sbox svg{flex-shrink:0;opacity:.6}
   .sbox input{flex:1;min-width:0;border:none;background:none;color:var(--ink);font-size:1rem;outline:none}
   .sbox input::placeholder{color:var(--dim)}
@@ -68,7 +82,7 @@
   .seg-s button.on{background:var(--glass2);color:var(--ink)}
   .tools{display:flex;gap:8px;margin:0 0 14px}
   .tools button{flex:1;height:44px;border-radius:14px;border:1px solid var(--stroke);background:var(--glass);font-size:.82rem;font-weight:650;display:flex;align-items:center;justify-content:center;gap:6px}
-  .tools button.hl{border-color:rgba(124,92,255,.45);background:rgba(124,92,255,.1);color:#c4b5fd}
+  .tools button.hl{border-color:color-mix(in srgb,var(--a1) 45%,transparent);background:color-mix(in srgb,var(--a1) 10%,transparent);color:var(--acc-t)}
 
   .progress{display:none;margin:0 2px 14px;padding:14px 16px;border-radius:18px;background:var(--glass);border:1px solid var(--stroke);font-size:.85rem;color:var(--mut)}
   .progress.on{display:block}
@@ -77,17 +91,17 @@
   .msg{margin:0 2px 14px;padding:14px 16px;border-radius:18px;font-size:.85rem;display:none}
   .msg.on{display:block}
   .msg.err{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.3);color:var(--bad)}
-  .msg.info{background:rgba(124,92,255,.1);border:1px solid rgba(124,92,255,.3);color:#c4b5fd}
+  .msg.info{background:color-mix(in srgb,var(--a1) 10%,transparent);border:1px solid color-mix(in srgb,var(--a1) 30%,transparent);color:var(--acc-t)}
 
   .card{position:relative;padding:16px;border-radius:24px;background:var(--glass);border:1px solid var(--stroke);margin-bottom:12px;
     backdrop-filter:blur(14px);transition:transform .18s,border-color .18s;animation:in .35s both}
   @keyframes in{from{opacity:0;transform:translateY(8px)}}
   .card:active{transform:scale(.985)}
-  .card.open{border-color:rgba(124,92,255,.45);background:rgba(124,92,255,.07)}
+  .card.open{border-color:color-mix(in srgb,var(--a1) 45%,transparent);background:color-mix(in srgb,var(--a1) 7%,transparent)}
   .row{display:flex;gap:14px;align-items:center}
   .ring{--v:50;--c:var(--good);width:58px;height:58px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;
     background:conic-gradient(var(--c) calc(var(--v)*1%),rgba(255,255,255,.07) 0)}
-  .ring div{width:46px;height:46px;border-radius:50%;background:#0f1016;display:grid;place-items:center;font-size:1.3rem;overflow:hidden}
+  .ring div{width:46px;height:46px;border-radius:50%;background:var(--ring);display:grid;place-items:center;font-size:1.3rem;overflow:hidden}
   .ring img{width:100%;height:100%;object-fit:cover}
   .info{flex:1;min-width:0}
   .t{font-weight:650;font-size:.92rem;line-height:1.3;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding-right:26px}
@@ -100,7 +114,7 @@
   .val small{font-size:.72rem;font-weight:650}
   .star{position:absolute;top:12px;right:12px;width:34px;height:34px;border:none;background:none;font-size:1.15rem;color:var(--dim);display:grid;place-items:center;border-radius:10px}
   .star.on{color:var(--mid)}
-  .flow{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 12px;border-radius:14px;background:rgba(0,0,0,.28);font-size:.8rem}
+  .flow{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 12px;border-radius:14px;background:var(--sunk);font-size:.8rem}
   .flow span{color:var(--mut)}.flow b{font-weight:700}
   .flow .arr{flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--dim),var(--a2));position:relative}
   .flow .arr::after{content:"";position:absolute;right:-1px;top:-3px;border:4px solid transparent;border-left:6px solid var(--a2)}
@@ -119,7 +133,7 @@
   .lines .tot{border-top:1px solid var(--stroke);margin-top:6px;padding-top:10px;color:var(--ink);font-weight:700}
   .lines .tot b{font-size:1.05rem}
   .cta{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 2px;height:48px;border-radius:15px;background:var(--grad);color:#fff;font-weight:700;text-decoration:none;font-size:.92rem;border:none;width:100%}
-  .ai-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;height:46px;border-radius:15px;border:1px solid rgba(124,92,255,.45);background:rgba(124,92,255,.1);color:#c4b5fd;font-weight:700;font-size:.88rem;width:100%}
+  .ai-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;height:46px;border-radius:15px;border:1px solid color-mix(in srgb,var(--a1) 45%,transparent);background:color-mix(in srgb,var(--a1) 10%,transparent);color:var(--acc-t);font-weight:700;font-size:.88rem;width:100%}
   .btn2{display:flex;gap:8px;margin-top:10px}
   .btn2>*{flex:1;margin:0!important}
   .ghost-b{height:46px;border-radius:15px;border:1px solid var(--stroke);background:var(--glass);font-weight:650;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;color:var(--ink)}
@@ -128,16 +142,16 @@
   .empty .cta{margin-top:16px}
 
   nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));z-index:7;
-    display:flex;gap:6px;padding:6px;border-radius:22px;background:rgba(20,21,28,.8);border:1px solid var(--stroke);backdrop-filter:blur(24px);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+    display:flex;gap:6px;padding:6px;border-radius:22px;background:var(--nav);border:1px solid var(--stroke);backdrop-filter:blur(24px);box-shadow:0 12px 40px rgba(0,0,0,.25)}
   nav button{width:62px;height:48px;border:none;border-radius:16px;background:none;display:grid;place-items:center;color:var(--mut);position:relative}
   nav button.on{background:var(--glass2);color:var(--ink)}
-  nav button .nd{position:absolute;top:9px;right:15px;width:9px;height:9px;border-radius:50%;background:var(--a2);box-shadow:0 0 0 3px rgba(20,21,28,.9);display:none}
+  nav button .nd{position:absolute;top:9px;right:15px;width:9px;height:9px;border-radius:50%;background:var(--a2);box-shadow:0 0 0 3px var(--surf);display:none}
   nav button.upd .nd{display:block}
 
   .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:.25s;z-index:9}
   .ov.show{opacity:1;pointer-events:auto}
   .sheet{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:auto;z-index:10;max-height:90vh;overflow:auto;
-    padding:12px 20px calc(20px + env(safe-area-inset-bottom));border-radius:30px 30px 0 0;background:#111219;border:1px solid var(--stroke);border-bottom:none;
+    padding:12px 20px calc(20px + env(safe-area-inset-bottom));border-radius:30px 30px 0 0;background:var(--surf);border:1px solid var(--stroke);border-bottom:none;
     transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.9,.25,1)}
   .sheet.show{transform:none}
   .grab{width:44px;height:5px;border-radius:9px;background:var(--glass2);margin:0 auto 18px}
@@ -150,8 +164,8 @@
   .two .inp{margin-bottom:0}
   .inp input,.inp select,.inp textarea{width:100%;height:56px;border-radius:16px;border:1px solid var(--stroke);background:var(--glass);color:var(--ink);font:inherit;font-size:1rem;font-weight:600;padding:22px 34px 6px 14px;outline:none;appearance:none}
   .inp textarea{height:84px;resize:none;font-weight:500;font-size:.9rem;padding-top:24px}
-  .inp select option{background:#111219}
-  .inp input:focus,.inp textarea:focus{border-color:rgba(124,92,255,.6)}
+  .inp select option{background:var(--surf);color:var(--ink)}
+  .inp input:focus,.inp textarea:focus{border-color:color-mix(in srgb,var(--a1) 60%,transparent)}
   .inp span{position:absolute;left:14px;top:8px;font-size:.68rem;color:var(--mut)}
   .inp em{position:absolute;right:14px;top:24px;font-style:normal;color:var(--dim);font-size:.9rem}
   .seg{display:flex;padding:4px;border-radius:16px;background:var(--glass);border:1px solid var(--stroke)}
@@ -166,7 +180,7 @@
   .slider .top{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:12px}
   .slider .top b{font-size:1.1rem}
   input[type=range]{width:100%;appearance:none;height:6px;border-radius:9px;background:var(--glass2);outline:none}
-  input[type=range]::-webkit-slider-thumb{appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(124,92,255,.35)}
+  input[type=range]::-webkit-slider-thumb{appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px color-mix(in srgb,var(--a1) 35%,transparent)}
   .acts{display:flex;gap:10px;margin-top:22px}
   .acts button{height:54px;border-radius:17px;border:1px solid var(--stroke);background:var(--glass);font-weight:700}
   .acts .ghost{flex:0 0 38%}
@@ -190,14 +204,14 @@
   .it .chev{color:var(--dim)}
   .it .del{border:none;background:var(--glass2);width:34px;height:34px;border-radius:10px;color:var(--bad)}
   .upcard{padding:18px;border-radius:22px;margin-bottom:12px;border:1px solid var(--stroke);
-    background:linear-gradient(160deg,rgba(124,92,255,.22),rgba(34,211,238,.08) 70%)}
+    background:linear-gradient(160deg,color-mix(in srgb,var(--a1) 22%,transparent),color-mix(in srgb,var(--a2) 8%,transparent) 70%)}
   .upcard .vr{display:flex;justify-content:space-between;align-items:center}
   .upcard .vr b{font-size:1.5rem;letter-spacing:-.03em}
   .upcard .vr span{font-size:.72rem;font-weight:700;padding:5px 10px;border-radius:9px;background:var(--glass2);color:var(--mut)}
   .upcard .vr span.ok{color:var(--good);background:rgba(52,211,153,.12)}
-  .upcard .vr span.new{color:#0b0c10;background:var(--a2)}
+  .upcard .vr span.new{color:#fff;background:var(--a1)}
   .upcard p{margin:10px 0 0;font-size:.84rem;color:var(--mut);line-height:1.45}
-  .upcard .notes{margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.28);font-size:.82rem;color:var(--mut);white-space:pre-wrap;max-height:160px;overflow:auto}
+  .upcard .notes{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--sunk);font-size:.82rem;color:var(--mut);white-space:pre-wrap;max-height:160px;overflow:auto}
   .ubtns{display:flex;gap:10px;margin-top:14px}
   .ubtns>*{flex:1;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:.9rem;text-decoration:none}
   .ubtns .sec-b{border:1px solid var(--stroke);background:var(--glass);color:var(--ink)}
@@ -206,7 +220,7 @@
   .busy .spin{display:inline-block}
   @keyframes sp{to{transform:rotate(360deg)}}
   .toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;transition:.25s;z-index:20;
-    padding:12px 18px;border-radius:14px;background:#1f2130;border:1px solid var(--stroke);font-size:.85rem;font-weight:600;pointer-events:none;white-space:nowrap}
+    padding:12px 18px;border-radius:14px;background:var(--toast);color:var(--ink);box-shadow:0 8px 30px rgba(0,0,0,.2);border:1px solid var(--stroke);font-size:.85rem;font-weight:600;pointer-events:none;white-space:nowrap}
   .toast.show{opacity:1;transform:translate(-50%,0)}
 
   /* Suivi */
@@ -215,8 +229,8 @@
   .status button{flex-shrink:0;height:32px;padding:0 11px;border-radius:10px;border:1px solid var(--stroke);background:var(--glass);font-size:.75rem;font-weight:650;color:var(--mut)}
   .status button.on{background:var(--grad);color:#fff;border-color:transparent}
   .st-tag{font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:7px}
-  .meta span.st-repere{background:var(--glass2);color:var(--mut)}.meta span.st-achete{background:rgba(34,211,238,.14);color:var(--a2)}
-  .meta span.st-repar{background:rgba(124,92,255,.18);color:#c4b5fd}.meta span.st-vente{background:rgba(251,191,36,.14);color:var(--mid)}
+  .meta span.st-repere{background:var(--glass2);color:var(--mut)}.meta span.st-achete{background:color-mix(in srgb,var(--a2) 14%,transparent);color:var(--a2)}
+  .meta span.st-repar{background:color-mix(in srgb,var(--a1) 18%,transparent);color:var(--acc-t)}.meta span.st-vente{background:rgba(251,191,36,.14);color:var(--mid)}
   .meta span.st-vendu{background:rgba(52,211,153,.14);color:var(--good)}
 
   /* Assistant IA */
@@ -224,7 +238,7 @@
   .bub{max-width:88%;padding:12px 15px;border-radius:20px;margin:8px 0;font-size:.9rem;line-height:1.5;word-wrap:break-word;animation:in .25s both}
   .bub.u{margin-left:auto;background:var(--grad);color:#fff;border-bottom-right-radius:6px}
   .bub.a{background:var(--glass2);border:1px solid var(--stroke);border-bottom-left-radius:6px}
-  .bub.a b{color:#fff}
+  .bub.a b{color:var(--strong)}
   .bub.sys{max-width:100%;text-align:center;background:none;color:var(--mut);font-size:.8rem}
   .bub .cp{display:inline-flex;align-items:center;gap:6px;margin-top:10px;height:30px;padding:0 11px;border-radius:9px;border:1px solid var(--stroke);background:var(--glass);font-size:.74rem;font-weight:650;color:var(--mut)}
   .bub .thumbs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
@@ -235,7 +249,7 @@
   .sugg{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
   .sugg button{padding:10px 14px;border-radius:14px;border:1px solid var(--stroke);background:var(--glass);font-size:.82rem;color:var(--ink);text-align:left}
   .cbar{position:fixed;left:0;right:0;bottom:calc(80px + env(safe-area-inset-bottom));z-index:6;max-width:720px;margin:auto;padding:0 18px}
-  .cbar form{display:flex;gap:8px;align-items:flex-end;padding:6px 6px 6px 16px;border-radius:20px;background:rgba(20,21,28,.92);border:1px solid var(--stroke);backdrop-filter:blur(20px)}
+  .cbar form{display:flex;gap:8px;align-items:flex-end;padding:6px 6px 6px 16px;border-radius:20px;background:var(--nav);border:1px solid var(--stroke);backdrop-filter:blur(20px)}
   .cbar textarea{flex:1;border:none;background:none;color:var(--ink);font:inherit;font-size:.95rem;resize:none;outline:none;max-height:120px;padding:10px 0}
   .cbar button{width:42px;height:42px;border-radius:14px;border:none;background:var(--grad);display:grid;place-items:center;flex-shrink:0}
   .parts{margin:8px 0;border-radius:18px;border:1px solid var(--stroke);background:var(--glass);overflow:hidden}
@@ -247,17 +261,47 @@
   .ptot{padding:13px 15px;font-size:.88rem;display:flex;justify-content:space-between;gap:10px}
   .ptot b{color:var(--good)}
   .meta .lot{color:var(--a2)}
+  .mic{width:40px;height:40px;border-radius:13px;border:1px solid var(--stroke);background:var(--glass);color:var(--mut);display:grid;place-items:center;flex-shrink:0}
+  .mic.rec{color:#fff;background:var(--bad);border-color:transparent;animation:p 1.2s infinite}
+  .cbar .mic{width:42px;height:42px;border-radius:14px}
+  .spark{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:.76rem;color:var(--mut)}
+  .spark svg{flex-shrink:0}
+  .spark b.up{color:var(--good)}.spark b.down{color:var(--bad)}
+  .chip.add{border-style:dashed}
+  .part .ali{width:40px;height:40px;border-radius:9px;background:#e62e04;color:#fff;display:grid;place-items:center;font-size:.72rem;font-weight:800;flex-shrink:0}
+  .swatches{display:flex;gap:12px}
+  .swatches button{appearance:none;padding:0;overflow:hidden;width:42px;height:42px;border-radius:50%;border:3px solid transparent;background:linear-gradient(135deg,var(--s1),var(--s2));box-shadow:0 0 0 1px var(--stroke)}
+  .swatches button.on{border-color:var(--ink)}
+  .desc{margin-top:12px;padding:14px;border-radius:16px;background:var(--sunk);border:1px solid var(--stroke);font-size:.82rem;color:var(--mut);line-height:1.55;max-height:420px;overflow:auto}
+  .desc h6{margin:12px 0 6px;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .desc h6:first-child{margin-top:0}
+  .desc .asp{display:grid;grid-template-columns:auto 1fr;gap:4px 12px}
+  .desc .asp span:nth-child(odd){color:var(--dim)}.desc .asp span:nth-child(even){color:var(--ink)}
+  .desc p{margin:0;white-space:pre-wrap;color:var(--ink)}
+  .quota{font-size:.72rem;color:var(--dim);margin:-4px 2px 12px;display:flex;align-items:center;gap:8px}
+  .quota i{flex:1;height:4px;border-radius:9px;background:var(--glass2);overflow:hidden;display:block}
+  .quota i b{display:block;height:100%;background:var(--grad)}
+  .quota.warn{color:var(--mid)}.quota.warn i b{background:var(--mid)}
+  .onb{position:fixed;inset:0;z-index:30;background:var(--bg);backdrop-filter:blur(12px);display:flex;flex-direction:column;padding:calc(30px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom));overflow:auto}
+  .onb .dots{display:flex;gap:6px;justify-content:center;margin-bottom:26px}
+  .onb .dots i{width:7px;height:7px;border-radius:9px;background:var(--glass2);transition:.2s}
+  .onb .dots i.on{width:22px;background:var(--grad)}
+  .onb .em{font-size:3.2rem;text-align:center}
+  .onb h2{font-size:1.6rem;letter-spacing:-.03em;text-align:center;margin:12px 0 8px}
+  .onb p{color:var(--mut);text-align:center;font-size:.92rem;line-height:1.5;margin:0 0 20px}
+  .onb .body{flex:1;max-width:520px;width:100%;margin:0 auto}
+  .onb .acts{max-width:520px;width:100%;margin:20px auto 0}
   .tools.g2{display:grid;grid-template-columns:1fr 1fr}
-  .offline{position:sticky;top:0;z-index:8;margin:0 -18px;padding:9px 18px;background:#3a2a10;color:var(--mid);font-size:.8rem;font-weight:650;text-align:center}
+  .offline{position:sticky;top:0;z-index:8;margin:0 -18px;padding:9px 18px;background:var(--surf);border-bottom:1px solid var(--stroke);color:var(--mid);font-size:.8rem;font-weight:650;text-align:center}
   .plan{display:flex;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--stroke);font-size:.84rem}
   .plan:first-of-type{border-top:none}
   .plan .tx{flex:1;min-width:0}.plan .tx small{display:block;color:var(--mut);font-size:.75rem;margin-top:2px}
   .plan b{font-size:.75rem;white-space:nowrap}
-  .scanbox{margin:8px 0;padding:14px 15px;border-radius:18px;border:1px solid rgba(34,211,238,.3);background:rgba(34,211,238,.06);font-size:.86rem;line-height:1.6}
+  .scanbox{margin:8px 0;padding:14px 15px;border-radius:18px;border:1px solid color-mix(in srgb,var(--a2) 30%,transparent);background:color-mix(in srgb,var(--a2) 6%,transparent);font-size:.86rem;line-height:1.6}
   .scanbox b{color:var(--ink)}
   .seller{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;font-size:.8rem;color:var(--mut)}
   .seller button{height:34px;padding:0 12px;border-radius:10px;border:1px solid var(--stroke);background:var(--glass);font-size:.76rem;font-weight:650}
-  .offer{margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.25);font-size:.82rem;color:var(--mut);line-height:1.45}
+  .offer{margin-top:12px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--a2) 7%,transparent);border:1px solid color-mix(in srgb,var(--a2) 25%,transparent);font-size:.82rem;color:var(--mut);line-height:1.45}
   .offer b{color:var(--ink)}
   .offer .ghost-b{margin-top:10px;width:100%;height:42px}
   .lbl2{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:14px 2px 0}
@@ -299,6 +343,7 @@
     <form class="sbox" id="sform">
       <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" enterkeyhint="search" placeholder="iPhone, PS5, MacBook…" autocomplete="off">
+      <button type="button" class="mic" id="micS" aria-label="Recherche vocale"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
       <button type="button" class="fbtn" id="openF" aria-label="Filtres">
         <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg><i id="fCount">0</i>
       </button>
@@ -311,6 +356,7 @@
     <h2 id="count">Résultats</h2>
     <div class="seg-s" id="sort"><button data-v="m" class="on">Marge</button><button data-v="p">%</button><button data-v="c">Fiabilité</button><button data-v="n">Négo</button><button data-v="a">Prix</button></div>
   </div>
+  <div class="quota" id="quota" hidden></div>
   <div class="tools g2" id="tools">
     <button class="hl" id="discover">🚀 Modèles rentables</button>
     <button id="mkAlert">🔔 Créer une alerte</button>
@@ -328,6 +374,7 @@
 <div class="wrap" id="vTrack" hidden>
   <div class="ptitle">Suivi</div>
   <p class="psub">Tes appareils, de l'achat à la revente, avec ta vraie marge.</p>
+  <div class="chips" id="tProf" style="padding-top:0;margin-bottom:14px"></div>
   <section class="hero" style="margin-top:0">
     <div class="lbl"><span class="pulse"></span>Bénéfice réalisé</div>
     <div class="big" id="tProfit">0 €</div>
@@ -340,6 +387,7 @@
   <div class="sec" id="tPlan"></div>
   <div class="sec" id="tStats"></div>
   <div class="sec" id="tCompta"></div>
+  <div class="sec" id="tTrend"></div>
   <div class="tools"><button id="tCsv">⬇️ Export tableur</button><button id="tSave">💾 Sauvegarder</button></div>
   <div class="chips" id="tFilter" style="padding-top:0;margin-bottom:12px"></div>
   <input type="file" id="photoIn" accept="image/*" multiple hidden>
@@ -354,6 +402,7 @@
   <div class="chat" id="chat"></div>
   <div class="cbar" id="cbar" hidden>
     <form id="cform">
+      <button type="button" class="mic" id="micA" aria-label="Question vocale"><svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
       <textarea id="cin" rows="1" placeholder="Pose ta question…"></textarea>
       <button aria-label="Envoyer"><svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </form>
@@ -364,6 +413,23 @@
 <div class="wrap" id="vSet" hidden>
   <div class="ptitle">Paramètres</div>
   <p class="psub">Mises à jour, alertes, clés et réglages par défaut.</p>
+
+  <div class="sec"><h4>Apparence</h4>
+    <div class="box" style="padding:14px 16px">
+      <div class="hello" style="margin-bottom:8px">Thème</div>
+      <div class="seg" id="thTheme"><button data-v="auto">📱 Auto</button><button data-v="dark">🌙 Sombre</button><button data-v="light">☀️ Clair</button></div>
+      <div class="hello" style="margin:16px 0 8px">Couleur</div>
+      <div class="swatches" id="thAccent">
+        <button data-v="aurora" style="--s1:#7c5cff;--s2:#22d3ee" aria-label="Aurore"></button>
+        <button data-v="sunset" style="--s1:#f97316;--s2:#ec4899" aria-label="Coucher de soleil"></button>
+        <button data-v="emerald" style="--s1:#10b981;--s2:#06b6d4" aria-label="Émeraude"></button>
+        <button data-v="ocean" style="--s1:#2563eb;--s2:#38bdf8" aria-label="Océan"></button>
+        <button data-v="mono" style="--s1:#6b7280;--s2:#a1a1aa" aria-label="Neutre"></button>
+      </div>
+      <div class="hello" style="margin:16px 0 8px">Taille du texte</div>
+      <div class="seg" id="thSize"><button data-v="small">A−</button><button data-v="normal">A</button><button data-v="large">A+</button></div>
+    </div>
+  </div>
 
   <div class="sec"><h4>Mise à jour</h4>
     <div class="upcard">
@@ -435,9 +501,23 @@
     </div>
   </div>
 
+  <div class="sec"><h4>Quota eBay du jour</h4>
+    <div class="box"><div class="it"><span class="ic">📊</span><span class="tx" id="qTxt">–<small>5 000 requêtes par jour · les alertes se mettent en pause à 4 000</small></span></div></div>
+  </div>
+
+  <div class="sec"><h4>Journal d'erreurs</h4>
+    <div class="box">
+      <div class="it"><span class="ic">🩺</span><span class="tx" id="jTxt">Aucune erreur<small>Les erreurs de l'appli sont notées ici</small></span></div>
+      <button class="it" id="jShare"><span class="ic">📤</span><span class="tx">Envoyer le journal<small>À coller dans la conversation avec Claude pour corriger</small></span><span class="chev">›</span></button>
+      <button class="it" id="jCopy"><span class="ic">📋</span><span class="tx">Copier le journal</span><span class="chev">›</span></button>
+      <button class="it" id="jDel"><span class="ic">🗑️</span><span class="tx">Effacer le journal</span><span class="chev">›</span></button>
+    </div>
+  </div>
+
   <div class="sec"><h4>Données</h4>
     <div class="box">
-      <button class="it" id="pCache"><span class="ic">🧹</span><span class="tx">Vider le cache des prix<small>Recalcule les prix de revente à la prochaine recherche</small></span><span class="chev">›</span></button>
+      <button class="it" id="pCache"><span class="ic">🧹</span><span class="tx">Vider le cache des prix<small id="cacheS">Les prix de revente sont gardés 24 h</small></span><span class="chev">›</span></button>
+      <button class="it" id="pGuide"><span class="ic">🧭</span><span class="tx">Revoir le guide de démarrage</span><span class="chev">›</span></button>
       <button class="it" id="pRestore"><span class="ic">♻️</span><span class="tx">Restaurer une sauvegarde<small>Fichier .json créé avec « 💾 Sauvegarder » dans Suivi</small></span><span class="chev">›</span></button>
       <button class="it" id="pRecent"><span class="ic">🕘</span><span class="tx">Effacer les recherches récentes</span><span class="chev">›</span></button>
       <a class="it" id="pRepo" href="#"><span class="ic">💻</span><span class="tx">Code source<small>Dépôt GitHub de l'appli</small></span><span class="chev">›</span></a>
@@ -452,6 +532,11 @@
   <button id="navP" aria-label="Paramètres"><span class="nd"></span><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
 </nav>
 <div class="toast" id="toast"></div>
+<div class="onb" id="onb" hidden>
+  <div class="dots" id="onbDots"></div>
+  <div class="body" id="onbBody"></div>
+  <div class="acts"><button class="ghost" id="onbSkip">Passer</button><button class="pri" id="onbNext">Suivant</button></div>
+</div>
 <div class="ov" id="ov"></div>
 
 <!-- Filtres -->
@@ -508,6 +593,16 @@
   <div class="acts"><button class="ghost" id="aDel">Effacer</button><button class="pri" id="aSave">Enregistrer et tester</button></div>
 </div>
 
+<!-- Nouveau profil -->
+<div class="sheet" id="shP">
+  <div class="grab"></div>
+  <h3>Profils</h3>
+  <p class="s">Chaque personne a son propre suivi, et « 👥 Ensemble » montre le bilan commun. Les profils sont sur ce téléphone : pour partager entre deux téléphones, utilise « 💾 Sauvegarder » puis « Restaurer ».</p>
+  <div class="box" id="pList" style="margin-top:14px"></div>
+  <div class="grp"><div class="inp"><span>Nouveau profil</span><input id="pNom" placeholder="Ex. : Lucas" autocomplete="off"></div></div>
+  <div class="acts"><button class="ghost" id="pClose">Fermer</button><button class="pri" id="pAdd">Ajouter</button></div>
+</div>
+
 <!-- Nouvelle alerte -->
 <div class="sheet" id="shAl">
   <div class="grab"></div>
@@ -534,6 +629,15 @@ const store={get(k,d=""){try{return localStorage.getItem(k)??d}catch(e){return d
   json(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},put(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const mediane=a=>{const s=a.slice().sort((x,y)=>x-y),m=s.length>>1;return s.length?(s.length%2?s[m]:(s[m-1]+s[m])/2):0;};
 const quant=(s,q)=>{const p=(s.length-1)*q,b=Math.floor(p);return s[b]+(s[Math.min(b+1,s.length-1)]-s[b])*(p-b);};
+/* Journal d'erreurs */
+function logErr(m){try{const j=store.json("journal_js",[]);j.push({t:Date.now(),m:String(m).slice(0,500)});store.put("journal_js",j.slice(-100));}catch(e){}}
+window.addEventListener("error",e=>logErr("JS : "+e.message+" ("+(e.filename||"").split("/").pop()+":"+e.lineno+")"));
+window.addEventListener("unhandledrejection",e=>logErr("Promesse : "+((e.reason&&e.reason.message)||e.reason)));
+function journalTout(){
+  let a=store.json("journal_js",[]);
+  try{if(window.Native&&Native.journal)a=a.concat(JSON.parse(Native.journal()||"[]"));}catch(e){}
+  return a.sort((x,y)=>x.t-y.t);
+}
 let toastT;
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove("show"),2200);}
 function copier(t){if(window.Native&&Native.copy)Native.copy(t);else navigator.clipboard?.writeText(t);toast("Copié !");}
@@ -594,15 +698,37 @@ function http(method,url,headers={},body=""){
 
 /* ===================== API eBay ===================== */
 const API="https://api.ebay.com",HS="7000",OK="1000|1500|2000|2010|2020|2030|2500|3000";
-const keys=()=>({id:store.get("ebay_id"),sec:store.get("ebay_sec"),mk:store.get("ebay_mk","EBAY_FR")});
+/* Coffre-fort : clés chiffrées par Android (en clair seulement dans un navigateur de test) */
+const coffre=!!(window.Native&&Native.secretGet);
+const secGet=k=>coffre?Native.secretGet(k):store.get(k);
+const secSet=k=>v=>{if(coffre){Native.secretSet(k,v||"");store.del(k);}else v?store.set(k,v):store.del(k);};
+if(coffre)["ebay_sec","ai_key"].forEach(k=>{const v=store.get(k);if(v){Native.secretSet(k,v);store.del(k);}});
+const keys=()=>({id:store.get("ebay_id"),sec:secGet("ebay_sec"),mk:store.get("ebay_mk","EBAY_FR")});
 let tok={v:null,exp:0};
 async function token(){
   if(tok.v&&Date.now()<tok.exp-60000)return tok.v;
-  const k=keys();
+  const k=keys();appelEbay();
   const d=await http("POST",API+"/identity/v1/oauth2/token",
     {"Authorization":"Basic "+btoa(k.id+":"+k.sec),"Content-Type":"application/x-www-form-urlencoded"},
     "grant_type=client_credentials&scope="+encodeURIComponent("https://api.ebay.com/oauth/api_scope"));
   tok={v:d.access_token,exp:Date.now()+d.expires_in*1000};return tok.v;
+}
+/* Compteur de requêtes eBay (5 000 par jour) */
+const QUOTA=5000;
+function quota(n=0){
+  if(window.Native&&Native.quotaAdd)return Native.quotaAdd(n);
+  const j=new Date().toISOString().slice(0,10),q=store.json("quota",{});const v=(q.j===j?q.n:0)+n;store.put("quota",{j,n:v});return v;
+}
+function appelEbay(){
+  const q=quota(1);
+  if(q>QUOTA-50)throw new Error(`Quota eBay du jour presque épuisé (${q}/${QUOTA}). Réessaie demain.`);
+  if(q%25===0)majQuota();
+}
+function majQuota(){
+  const q=quota(0),el=$("quota");if(!el)return;
+  el.hidden=!st.live;el.className="quota"+(q>QUOTA*.8?" warn":"");
+  el.innerHTML=`eBay aujourd'hui : ${q.toLocaleString("fr-FR")} / ${QUOTA.toLocaleString("fr-FR")}<i><b style="width:${Math.min(100,q/QUOTA*100)}%"></b></i>`;
+  const t=$("qTxt");if(t)t.innerHTML=`${q.toLocaleString("fr-FR")} / ${QUOTA.toLocaleString("fr-FR")} requêtes utilisées aujourd'hui<small>Recherches, prix de revente et alertes · ${q>4000?"⚠️ alertes en pause jusqu'à demain":"les alertes se mettent en pause à 4 000"}</small>`;
 }
 const hdr=async()=>({"Authorization":"Bearer "+await token(),"X-EBAY-C-MARKETPLACE-ID":keys().mk,"Accept-Language":"fr-FR"});
 async function ebaySearch({q,epid,cat,cond,max,buying,fr,limit=50,gtin,seller}){
@@ -613,14 +739,17 @@ async function ebaySearch({q,epid,cat,cond,max,buying,fr,limit=50,gtin,seller}){
   if(fr)f.push("itemLocationCountry:FR");
   const p=new URLSearchParams({filter:f.join(","),limit});
   if(q)p.set("q",q);if(epid)p.set("epid",epid);if(gtin)p.set("gtin",gtin);if(cat)p.set("category_ids",cat);
+  appelEbay();
   const d=await http("GET",API+"/buy/browse/v1/item_summary/search?"+p,await hdr());
   return d.itemSummaries||[];
 }
-const getItem=async id=>http("GET",API+"/buy/browse/v1/item/"+encodeURIComponent(id),await hdr());
+const getItem=async id=>(appelEbay(),http("GET",API+"/buy/browse/v1/item/"+encodeURIComponent(id),await hdr()));
 const prixDe=i=>parseFloat((i.price||i.currentBidPrice||{}).value||0);
 const portDe=i=>{const o=(i.shippingOptions||[])[0];return o&&o.shippingCost?parseFloat(o.shippingCost.value):0;};
 const propre=t=>t.toLowerCase().replace(MOTS," ").replace(/\blot\s*(de\s*)?\d+\b/gi," ").replace(/[^\p{L}\p{N}\s]/gu," ").split(/\s+/).filter(Boolean).slice(0,6).join(" ");
-const cache={};
+/* Prix de revente gardés 24 h (même après fermeture de l'appli) */
+const JOUR=864e5,cache=(()=>{const c=store.json("price_cache",{}),now=Date.now();Object.keys(c).forEach(k=>{if(!c[k].t||now-c[k].t>JOUR)delete c[k];});return c;})();
+let saveT;const garderCache=()=>{clearTimeout(saveT);saveT=setTimeout(()=>{const k=Object.keys(cache);if(k.length>600)k.sort((a,b)=>cache[a].t-cache[b].t).slice(0,k.length-600).forEach(x=>delete cache[x]);store.put("price_cache",cache);},500);};
 async function revente(it){
   const k=it.epid||propre(it.title);
   if(k in cache)return cache[k];
@@ -628,10 +757,10 @@ async function revente(it){
   const garder=l=>l.filter(o=>!ACCESS.test(o.title)&&!new RegExp(MOTS.source,"iu").test(o.title)).map(prixDe).filter(v=>v>0);
   // 1) Vrais prix en occasion, sans accessoires ni appareils HS
   let r=robuste(garder(await ebaySearch({...base,cond:"3000",limit:40})));
-  if(r.nb>=3)return cache[k]={...r,occ:true};
+  if(r.nb>=3){cache[k]={...r,occ:true,t:Date.now()};garderCache();historiser(k,r.v,r.nb);return cache[k];}
   // 2) Pas assez d'occasion : on élargit (reconditionné, comme neuf…)
   r=robuste(garder(await ebaySearch({...base,cond:OK,limit:25})));
-  return cache[k]=r.nb>=3?{...r,occ:false}:{v:null,nb:r.nb};
+  cache[k]=r.nb>=3?{...r,occ:false,t:Date.now()}:{v:null,nb:r.nb,t:Date.now()};garderCache();if(r.nb>=3)historiser(k,r.v,r.nb);return cache[k];
 }
 
 /* ===================== Recherche en direct ===================== */
@@ -660,7 +789,7 @@ async function runSearch(requetes,limit){
         const auction=(it.buyingOptions||[]).includes("AUCTION")&&!(it.buyingOptions||[]).includes("FIXED_PRICE");
         const bid=prixDe(it),endH=it.itemEndDate?Math.max(0,(new Date(it.itemEndDate)-Date.now())/36e5):null,bids=it.bidCount||0;
         const hm=(hsFix[cle(it)]||[]).length>=2?mediane(hsFix[cle(it)]):null;
-        out.push({id:it.itemId,itemId:it.itemId,t:it.title,url:it.itemWebUrl,img:(it.image||{}).imageUrl,ico:ICO[st.cat]||"🔧",
+        out.push({key:cle(it),id:it.itemId,itemId:it.itemId,t:it.title,url:it.itemWebUrl,img:(it.image||{}).imageUrl,ico:ICO[st.cat]||"🔧",
           achat:auction?estimEnchere(bid,endH??24,bids,hm):bid,bid,bids,endH,auction,port:portDe(it),
           revente:r.v,nb:r.nb,occ:r.occ,min:r.min,max:r.max,spread:r.spread,ecartes:r.ecartes,qty:parseLot(it.title),
           ageJ:it.itemCreationDate?Math.floor((Date.now()-new Date(it.itemCreationDate))/864e5):null,
@@ -675,7 +804,7 @@ async function runSearch(requetes,limit){
     else if(!out.length)showMsg("info","Pas assez d'annonces d'occasion pour estimer un prix de revente. Essaie un modèle plus précis.");
   }catch(e){showMsg("err",navigator.onLine===false?"Pas de connexion internet. Tes derniers résultats restent visibles.":e.message);
     if(!st.raw.length)restaurerResultats();}
-  prog(false);busy=false;render();
+  prog(false);busy=false;render();majQuota();
 }
 function liveSearch(){
   const q=$("q").value.trim();
@@ -700,13 +829,13 @@ $("recent").onclick=e=>{const b=e.target.closest("button");if(!b)return;$("q").v
 
 /* ===================== Interface : recherche ===================== */
 function prog(on,t,p){$("prog").classList.toggle("on",on);if(t)$("progT").textContent=t;if(p!=null)$("progB").style.width=p+"%";}
-function showMsg(kind,t){const m=$("msg");m.className="msg"+(kind?" on "+kind:"");m.textContent=t||"";}
+function showMsg(kind,t){if(kind==="err")logErr("Recherche : "+t);const m=$("msg");m.className="msg"+(kind?" on "+kind:"");m.textContent=t||"";}
 function setMode(){
   st.live=!!(keys().id&&keys().sec);
   $("modeBtn").textContent=st.live?"● EN DIRECT":"DÉMO";$("modeBtn").classList.toggle("live",st.live);
   $("hello").textContent=st.live?"Annonces eBay en cours":"Démo · fausses annonces";
   if(st.live){st.raw=[];showMsg("info","Tape un appareil puis valide, ou touche 🚀 Modèles rentables.");restaurerResultats();}
-  else{st.raw=DEMO.map((d,i)=>{const a=d.type==="AUCTION";return{...d,id:"demo"+i,occ:true,auction:a,bid:d.achat,
+  else{st.raw=DEMO.map((d,i)=>{const a=d.type==="AUCTION";return{...d,id:"demo"+i,key:"demo"+i,histo:demoHisto(d.revente,i),occ:true,auction:a,bid:d.achat,
     achat:a?estimEnchere(d.achat,d.endH,d.bids,null):d.achat,min:Math.round(d.revente*.78),max:Math.round(d.revente*1.3)};});showMsg();}
   render();syncConfig();
 }
@@ -739,7 +868,7 @@ function badge(){
 const famille=t=>propre(t).split(" ").slice(0,2).join(" ");
 function apprendre(){
   const m={};if(store.get("learn","1")!=="1")return m;
-  store.json("suivi",[]).forEach(x=>{if(x.pieces===""||x.pieces==null||!x.reventePrev)return;
+  suiviTous().forEach(x=>{if(x.pieces===""||x.pieces==null||!x.reventePrev)return;
     const k=famille(x.t),r=Math.min(.8,Math.max(0,(+x.pieces)/x.reventePrev));(m[k]=m[k]||{s:0,n:0});m[k].s+=r;m[k].n++;});
   Object.values(m).forEach(v=>v.pct=Math.round(v.s/v.n*1000)/10);return m;
 }
@@ -781,7 +910,7 @@ function render(){
   $("sMoy").textContent=res.length?eur(res.reduce((s,d)=>s+d.m,0)/res.length):"–";
   $("count").textContent=res.length+" annonce"+(res.length>1?"s":"");
   st.shown=res;majWidget(best);
-  const suivis=new Set(store.json("suivi",[]).map(s=>s.id));
+  const suivis=new Set(suiviTous().map(s=>s.id));
 
   $("list").innerHTML=res.length?res.map((d,i)=>{
     const c=d.m<0?"var(--bad)":d.p<50?"var(--mid)":"var(--good)",v=Math.max(4,Math.min(100,d.p/2)),w=x=>Math.max(0,x/d.R*100),ofr=(d.offer||d.auction)&&d.maxAchat>0?messageOffre(d):null;
@@ -796,6 +925,7 @@ function render(){
       <div class="flow"><span>${d.auction?"Achat estimé":"Achat"}</span><b>${eur(d.a)}</b><div class="arr"></div><span>${d.occ?"Revente occasion":"Revente"}</span><b>${eur(d.R)}</b></div>
       ${d.q>1?`<div class="note">Lot de <b>${d.q}</b> appareils : revente estimée ${d.q} × ${eur(d.revente)} = <b>${eur(d.R)}</b>, soit ${eur(d.a/d.q)} l'appareil à l'achat</div>`:""}
       ${d.auction?`<div class="note auc">Enchère actuelle <b>${eur(d.bid,2)}</b> · ${d.bids} offre${d.bids>1?"s":""} · fin dans ${d.endH!=null?fmtH(d.endH):"?"} → prix final estimé <b>${eur(d.achat)}</b></div>`:""}
+      ${tendanceHTML(d)}
       ${d.min!=null?`<div class="note">Prix ${d.occ?"en occasion":"constatés (pas assez d'occasion)"} : <b>${eur(d.min)} – ${eur(d.max)}</b> sur ${d.nb} annonces${d.ecartes?` · ${d.ecartes} prix aberrant${d.ecartes>1?"s":""} écarté${d.ecartes>1?"s":""}`:""}</div>`:""}
       <div class="detail"><div>
         <div class="stack"><i class="c-a" style="flex:${w(d.a)}"></i><i class="c-r" style="flex:${w(d.r)}"></i><i class="c-f" style="flex:${w(d.f)}"></i><i class="c-m" style="flex:${w(d.m)}"></i></div>
@@ -810,6 +940,8 @@ function render(){
           ${ofr&&!d.auction?`<button class="ghost-b" onclick="event.stopPropagation();copier(st.shown[${i}]&&messageOffre(st.shown[${i}]).txt)">💬 Copier une offre à ${eur(ofr.o)}</button>`:""}</div>
         ${d.seller?`<div class="seller"><span>👤 ${esc(d.seller)}${d.fb!=null?` (${d.fb})`:""} · ${vuVendeur(d.seller)} annonce${vuVendeur(d.seller)>1?"s":""} HS vue${vuVendeur(d.seller)>1?"s":""}</span><button onclick="event.stopPropagation();suivreVendeur('${esc(d.seller)}')">${vendeursSuivis().includes(d.seller)?"✓ Suivi":"+ Suivre"}</button></div>`:""}
         <div class="lbl2">Revendre ailleurs ?</div><div class="btn2">${ailleurs(d.t)}</div>
+        <button class="ghost-b" style="width:100%;margin-top:10px" onclick="event.stopPropagation();descriptif(${i},this)">📄 Voir le descriptif de l'annonce</button>
+        <div class="desc" id="desc-${i}" hidden onclick="event.stopPropagation()"></div>
         <button class="ai-btn" onclick="event.stopPropagation();analyse(st.shown[${i}])">✨ Analyser avec l'IA · photos, pièces, prix</button>
         <a class="cta" href="${d.url?esc(d.url):"#"}" onclick="event.stopPropagation();${d.url?"":"return false"}">Voir sur eBay
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
@@ -817,16 +949,156 @@ function render(){
     </div>`}).join(""):(busy?"":`<div class="empty"><b>🔍</b>${st.live?"Lance une recherche pour voir les affaires.<br>Ou laisse Margeo tester les modèles les plus courants.":"Aucune affaire avec ces filtres."}${st.live?'<button class="cta" onclick="$(\'discover\').click()">🚀 Trouver les modèles rentables</button>':""}</div>`);
 }
 
+/* ===================== Historique des prix ===================== */
+const jourCle=t=>new Date(t).toISOString().slice(0,10);
+function historiser(k,v,nb){
+  const H=store.json("price_hist",{}),a=H[k]=H[k]||[],j=jourCle(Date.now());
+  if(a.length&&a[a.length-1][0]===j)a[a.length-1]=[j,Math.round(v),nb];else a.push([j,Math.round(v),nb]);
+  H[k]=a.filter(x=>Date.now()-new Date(x[0])<=180*JOUR);
+  const ks=Object.keys(H);if(ks.length>300)ks.sort((x,y)=>H[x][H[x].length-1][0]<H[y][H[y].length-1][0]?-1:1).slice(0,ks.length-300).forEach(x=>delete H[x]);
+  store.put("price_hist",H);
+}
+function demoHisto(v,i){const a=[],dir=[1,-1,0,1,-1,1,0][i%7]*.012;for(let w=7;w>=0;w--)a.push([jourCle(Date.now()-w*7*JOUR),Math.round(v*(1-dir*w)+((i*7+w*3)%5-2)*v*.006),10]);return a;}
+const histoDe=d=>d.histo||store.json("price_hist",{})[d.key]||[];
+function evolution(a){
+  if(a.length<2)return null;const last=a[a.length-1],t0=new Date(last[0])-30*JOUR;
+  const ref=a.find(x=>new Date(x[0])>=t0)||a[0];if(ref===last)return null;
+  const j=Math.round((new Date(last[0])-new Date(ref[0]))/JOUR);if(j<3)return null;
+  return{pct:(last[1]-ref[1])/ref[1]*100,j};
+}
+function sparkline(a,w=86,hgt=26){
+  const v=a.map(x=>x[1]),mn=Math.min(...v),mx=Math.max(...v),r=mx-mn||1;
+  const pts=v.map((y,i)=>`${(i/(v.length-1)*(w-4)+2).toFixed(1)},${(hgt-2-(y-mn)/r*(hgt-4)).toFixed(1)}`).join(" ");
+  return`<svg width="${w}" height="${hgt}" viewBox="0 0 ${w} ${hgt}"><polyline points="${pts}" fill="none" stroke="var(--a2)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+function tendanceHTML(d){
+  const a=histoDe(d),e=evolution(a);if(!e)return"";
+  const s=Math.abs(e.pct)<1?"stable":(e.pct>0?"📈 +":"📉 ")+e.pct.toFixed(0).replace("-","−")+" %";
+  return`<div class="spark">${sparkline(a)}<span>Prix d'occasion : <b class="${e.pct>=1?"up":e.pct<=-1?"down":""}">${s}</b> sur ${e.j} j</span></div>`;
+}
+function renderTendances(){
+  const H=store.json("price_hist",{}),l=Object.entries(H).map(([k,a])=>({k,a,e:evolution(a)})).filter(x=>x.e&&Math.abs(x.e.pct)>=1)
+    .sort((x,y)=>Math.abs(y.e.pct)-Math.abs(x.e.pct)).slice(0,8);
+  $("tTrend").innerHTML=l.length?`<h4>Tendances des prix d'occasion</h4><div class="box">${l.map(x=>`<div class="rank"><span style="display:flex;align-items:center;gap:10px">${sparkline(x.a,60,22)}${esc(x.k)}</span><b style="color:${x.e.pct>0?"var(--good)":"var(--bad)"}">${x.e.pct>0?"+":"−"}${Math.abs(x.e.pct).toFixed(0)} %</b></div>`).join("")}</div>`
+    :`<h4>Tendances des prix d'occasion</h4><div class="box"><div class="it"><span class="ic">📈</span><span class="tx">Pas encore assez d'historique<small>Les prix sont enregistrés à chaque recherche : les tendances apparaissent après quelques jours</small></span></div></div>`;
+}
+
+/* ===================== Profils ===================== */
+const profils=()=>{const p=store.json("profils",[]);return p.length?p:[{id:"moi",nom:"Moi"}];};
+const profilCourant=()=>{const c=store.get("profil","moi");return c==="tous"||profils().some(p=>p.id===c)?c:"moi";};
+const nomProfil=id=>(profils().find(p=>p.id===id)||{}).nom||"Moi";
+const cleSuivi=id=>id==="moi"?"suivi":"suivi_"+id;
+const lireSuivi=id=>store.json(cleSuivi(id),[]);
+const ecrireSuivi=(id,l)=>store.put(cleSuivi(id),l);
+const suiviTous=()=>profils().flatMap(p=>lireSuivi(p.id).map(x=>({...x,__p:p.id})));
+const suiviVue=()=>profilCourant()==="tous"?suiviTous():lireSuivi(profilCourant()).map(x=>({...x,__p:profilCourant()}));
+function trouverSuivi(id){for(const p of profils()){const l=lireSuivi(p.id),x=l.find(y=>y.id===id);if(x)return{p:p.id,l,x};}return null;}
+function renderProfils(){
+  const P=profils(),c=profilCourant();
+  $("tProf").innerHTML=(P.length>1?P.map(p=>`<button class="chip${c===p.id?" on":""}" data-p="${esc(p.id)}">👤 ${esc(p.nom)}</button>`).join("")+`<button class="chip${c==="tous"?" on":""}" data-p="tous">👥 Ensemble</button>`:"")
+    +`<button class="chip add" data-p="+">＋ ${P.length>1?"Profils":"Ajouter un profil"}</button>`;
+}
+$("tProf").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.p==="+"){renderPList();sheet("shP");return;}
+  store.set("profil",b.dataset.p);tFiltre="";renderSuivi();};
+function renderPList(){
+  $("pList").innerHTML=profils().map(p=>`<div class="it"><span class="ic">👤</span><span class="tx">${esc(p.nom)}<small>${lireSuivi(p.id).length} appareil(s) suivi(s)</small></span>${p.id==="moi"?"":`<button class="del" onclick="supprProfil('${esc(p.id)}')">✕</button>`}</div>`).join("");
+}
+$("pClose").onclick=()=>sheet(null);
+$("pAdd").onclick=()=>{const n=$("pNom").value.trim();if(!n)return toast("Indique un prénom");
+  const P=profils();if(!store.json("profils",[]).length)P.splice(0,1,{id:"moi",nom:"Moi"});
+  const id=Date.now().toString(36);P.push({id,nom:n});store.put("profils",P);store.set("profil",id);$("pNom").value="";renderPList();renderSuivi();toast("👤 Profil "+n+" créé");};
+function supprProfil(id){
+  const l=lireSuivi(id);if(l.length){ecrireSuivi("moi",lireSuivi("moi").concat(l));toast(`${l.length} appareil(s) déplacé(s) vers « Moi »`);}
+  store.del(cleSuivi(id));store.put("profils",profils().filter(p=>p.id!==id));if(profilCourant()===id)store.set("profil","moi");renderPList();renderSuivi();
+}
+
+/* ===================== Voix ===================== */
+let voixCible=null,voixRepond=false;
+function ecouter(cible){
+  if(!(window.Native&&Native.listen))return toast("La voix fonctionne dans l'appli Android");
+  voixCible=cible;$(cible==="search"?"micS":"micA").classList.add("rec");Native.listen();
+}
+const aVoix=t=>String(t).replace(/```[\s\S]*?```/g,"").replace(/[*#`•]/g,"").replace(/\n+/g,". ").replace(/\s+/g," ").trim();
+function parler(t){if(window.Native&&Native.speak)Native.speak(aVoix(t).slice(0,600));}
+window.__voix=t=>{
+  ["micS","micA"].forEach(i=>$(i).classList.remove("rec"));
+  if(t===null)return toast("Reconnaissance vocale indisponible sur ce téléphone");
+  if(!t)return;
+  const question=/^(combien|quel|quelle|quels|est-ce|c'est|dois|vaut|comment|pourquoi|que |qu'|est ce)/i.test(t)||t.includes("?");
+  if(voixCible==="search"&&!question){$("q").value=t;st.live?liveSearch():render();return;}
+  if(!aiKey()){$("q").value=t;view("vSearch");st.live?liveSearch():render();return toast("Ajoute ta clé Claude pour poser des questions à voix haute");}
+  view("vAI");voixRepond=true;
+  ask(t+`\n\n(Question posée à voix haute : réponds en 2 ou 3 phrases courtes, faciles à écouter. Si elle porte sur la valeur d'un appareil précis, termine par le bloc json {"scan":{"modele":"…","recherche":"…"}} pour que je cherche les prix eBay.)`,{label:"🎤 "+t});
+};
+$("micS").onclick=()=>ecouter("search");
+$("micA").onclick=()=>ecouter("ai");
+
+/* ===================== Partage depuis eBay ===================== */
+const resoudre=url=>new Promise(res=>{const id=Math.random().toString(36).slice(2);cbs[id]={res,rej:()=>res({url})};Native.resolve(id,url);});
+const idEbay=u=>(String(u).match(/\/itm\/(?:[^\/?#]+\/)?(\d{9,15})/)||String(u).match(/[?&](?:item|itm|itemId)=(\d{9,15})/)||[])[1];
+window.__partage=async texte=>{
+  if(window.Native&&Native.sharedText)Native.sharedText();
+  sheet(null);view("vSearch");
+  const m=String(texte).match(/https?:\/\/\S+/);
+  if(!m)return showMsg("info","Le texte partagé ne contient pas de lien d'annonce eBay.");
+  let url=m[0],id=idEbay(url);
+  if(!id&&window.Native&&Native.resolve){prog(true,"Ouverture du lien partagé…",15);url=(await resoudre(url)).url||url;id=idEbay(url);}
+  if(!id){prog(false);return showMsg("info","Ce lien n'est pas une annonce eBay reconnue.");}
+  if(!st.live){prog(false);return showMsg("info","Ajoute tes clés eBay pour analyser une annonce partagée.");}
+  prog(true,"Analyse de l'annonce partagée…",40);
+  try{
+    appelEbay();
+    const it=await http("GET",API+"/buy/browse/v1/item/get_item_by_legacy_id?legacy_item_id="+id,await hdr());
+    descCache[it.itemId]=it;prog(true,"Recherche des prix d'occasion…",70);
+    const r=await revente(it);
+    if(!r.v){prog(false);return showMsg("info",`« ${it.title} » : pas assez d'annonces d'occasion pour estimer la revente.`);}
+    const auction=(it.buyingOptions||[]).includes("AUCTION")&&!(it.buyingOptions||[]).includes("FIXED_PRICE");
+    const bid=prixDe(it),endH=it.itemEndDate?Math.max(0,(new Date(it.itemEndDate)-Date.now())/36e5):null;
+    st.raw=[{key:it.epid||propre(it.title),id:it.itemId,itemId:it.itemId,t:it.title,url:it.itemWebUrl,img:(it.image||{}).imageUrl,ico:"🔗",
+      achat:auction?estimEnchere(bid,endH??24,it.bidCount||0,null):bid,bid,bids:it.bidCount||0,endH,auction,port:portDe(it),
+      revente:r.v,nb:r.nb,occ:r.occ,min:r.min,max:r.max,spread:r.spread,ecartes:r.ecartes,qty:parseLot(it.title),
+      ageJ:it.itemCreationDate?Math.floor((Date.now()-new Date(it.itemCreationDate))/864e5):null,
+      drop:Math.round(+((it.marketingPrice||{}).discountPercentage||0)),offer:(it.buyingOptions||[]).includes("BEST_OFFER"),
+      seller:(it.seller||{}).username||"",fb:(it.seller||{}).feedbackScore,type:auction?"AUCTION":"FIXED_PRICE",fr:(it.itemLocation||{}).country==="FR"}];
+    prog(false);showMsg("info","🔗 Annonce partagée depuis eBay. Si l'appareil fonctionne déjà, la marge suppose quand même une réparation.");
+    render();const c=document.querySelector("#list .card");c&&c.classList.add("open");majQuota();
+  }catch(e){prog(false);showMsg("err","Annonce partagée : "+e.message);}
+};
+
+/* ===================== Descriptif de l'annonce ===================== */
+const descCache={};
+const texteHTML=html=>{try{const d=new DOMParser().parseFromString(String(html||""),"text/html");d.querySelectorAll("script,style").forEach(e=>e.remove());
+  return (d.body.innerText||d.body.textContent||"").replace(/\n{3,}/g,"\n\n").trim();}catch(e){return "";}};
+async function descriptif(i,btn){
+  const d=st.shown[i],box=$("desc-"+i);if(!d||!box)return;
+  if(!box.hidden){box.hidden=true;btn.textContent="📄 Voir le descriptif de l'annonce";return;}
+  box.hidden=false;btn.textContent="📄 Masquer le descriptif";
+  if(!st.live||!d.itemId){box.innerHTML=`<h6>Description (démo)</h6><p>${esc(d.t)}. Vendu en l'état, pour pièces ou réparation. Aucun retour accepté. Photos non contractuelles.</p><h6>Caractéristiques</h6><div class="asp"><span>Marque</span><span>${esc(d.t.split(" ")[0])}</span><span>État</span><span>Pour pièces ou ne fonctionne pas</span></div>`;return;}
+  if(!descCache[d.itemId]){
+    box.innerHTML='<span class="typing"><span></span><span></span><span></span></span> Chargement du descriptif…';
+    try{descCache[d.itemId]=await getItem(d.itemId);}catch(e){box.innerHTML="Impossible de charger le descriptif : "+esc(e.message);logErr("Descriptif : "+e.message);return;}
+  }
+  const it=descCache[d.itemId],asp=(it.localizedAspects||[]).slice(0,16);
+  const txt=texteHTML(it.description)||it.shortDescription||"";
+  box.innerHTML=`<h6>État</h6><p>${esc(it.condition||"")}${it.conditionDescription?" — "+esc(it.conditionDescription):""}</p>
+    ${asp.length?`<h6>Caractéristiques</h6><div class="asp">${asp.map(a=>`<span>${esc(a.name)}</span><span>${esc(a.value)}</span>`).join("")}</div>`:""}
+    <h6>Description du vendeur</h6><p>${txt?esc(txt.slice(0,4000))+(txt.length>4000?"…":""):"Pas de description."}</p>
+    ${it.returnTerms?`<h6>Retours</h6><p>${it.returnTerms.returnsAccepted?"Retours acceptés"+(it.returnTerms.returnPeriod?` (${it.returnTerms.returnPeriod.value} ${it.returnTerms.returnPeriod.unit==="DAY"?"jours":it.returnTerms.returnPeriod.unit})`:""):"Retours non acceptés"}</p>`:""}`;
+}
+
 /* ===================== Suivi des appareils ===================== */
 const STATUTS=[["repere","Repéré"],["achete","Acheté"],["repar","En réparation"],["vente","En vente"],["vendu","Vendu"]];
 const SNOM=Object.fromEntries(STATUTS);
 let tFiltre="";
 function toggleSuivi(i,btn){
-  const d=st.shown[i];if(!d)return;let s=store.json("suivi",[]);
-  if(s.some(x=>x.id===d.id)){s=s.filter(x=>x.id!==d.id);toast("Retiré du suivi");}
-  else{s.unshift({id:d.id,itemId:d.itemId||"",t:d.t,img:d.img||"",ico:d.ico,url:d.url||"",achatPrev:+d.a.toFixed(2),reventePrev:Math.round(d.R),qty:d.q,
-    min:d.min,max:d.max,occ:d.occ,margePrev:Math.round(d.m),statut:"repere",achat:"",pieces:"",vente:"",notes:"",date:Date.now()});toast("★ Ajouté au suivi");}
-  store.put("suivi",s);btn.classList.toggle("on");btn.textContent=btn.classList.contains("on")?"★":"☆";
+  const d=st.shown[i];if(!d)return;
+  const ex=trouverSuivi(d.id);
+  if(ex){ecrireSuivi(ex.p,ex.l.filter(x=>x.id!==d.id));toast("Retiré du suivi");btn.classList.remove("on");btn.textContent="☆";return;}
+  const pc=profilCourant()==="tous"?"moi":profilCourant();let s=lireSuivi(pc);
+  {s.unshift({id:d.id,itemId:d.itemId||"",t:d.t,img:d.img||"",ico:d.ico,url:d.url||"",achatPrev:+d.a.toFixed(2),reventePrev:Math.round(d.R),qty:d.q,
+    min:d.min,max:d.max,occ:d.occ,margePrev:Math.round(d.m),statut:"repere",achat:"",pieces:"",vente:"",notes:"",date:Date.now()});toast("★ Ajouté au suivi"+(profils().length>1?" de "+nomProfil(pc):""));}
+  ecrireSuivi(pc,s);btn.classList.toggle("on");btn.textContent=btn.classList.contains("on")?"★":"☆";
 }
 function margeReelle(x){
   const {fr,fx}=defs(),achat=x.achat!==""?+x.achat:x.achatPrev,pieces=+x.pieces||0;
@@ -834,12 +1106,13 @@ function margeReelle(x){
   return{m:x.reventePrev-achat-pieces-(x.reventePrev*fr/100+fx),reel:false};
 }
 function renderSuivi(){
-  const s=store.json("suivi",[]),vendus=s.filter(x=>x.statut==="vendu"&&x.vente!=="");
+  renderProfils();
+  const s=suiviVue(),vendus=s.filter(x=>x.statut==="vendu"&&x.vente!=="");
   const tot=vendus.reduce((a,x)=>a+margeReelle(x).m,0);
   $("tProfit").textContent=(tot>=0?"+":"")+eur(tot);
   $("tSold").textContent=vendus.length;$("tOpen").textContent=s.filter(x=>x.statut!=="vendu").length;
   $("tAvg").textContent=vendus.length?eur(tot/vendus.length):"–";
-  renderStats(s);renderPlan(s);renderCompta(s);majWidget();
+  renderStats(s);renderPlan(s);renderCompta(s);renderTendances();majWidget();
   $("tFilter").innerHTML=[["","Tous"],...STATUTS].map(([k,n])=>`<button class="chip${k===tFiltre?" on":""}" data-k="${k}">${n} ${k?`(${s.filter(x=>x.statut===k).length})`:`(${s.length})`}</button>`).join("");
   const l=s.filter(x=>!tFiltre||x.statut===tFiltre);
   $("tList").innerHTML=l.length?l.map(x=>{const mr=margeReelle(x),c=mr.m<0?"var(--bad)":"var(--good)";
@@ -929,7 +1202,7 @@ function majWidget(best){
   if(!(window.Native&&Native.saveWidget))return;
   const w=store.json("widget_last",{});
   if(best!==undefined){if(best){w.best=(best.m>=0?"+":"")+eur(best.m);w.titre=best.t;}}
-  const n=new Date(),mois=store.json("suivi",[]).filter(x=>x.statut==="vendu"&&x.vente!==""&&(d=>d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear())(new Date((x.dates&&x.dates.vendu)||x.date)))
+  const n=new Date(),mois=suiviTous().filter(x=>x.statut==="vendu"&&x.vente!==""&&(d=>d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear())(new Date((x.dates&&x.dates.vendu)||x.date)))
     .reduce((a,x)=>a+margeReelle(x).m,0);
   w.mois=(mois>=0?"+":"")+eur(mois);store.put("widget_last",w);
   try{Native.saveWidget(JSON.stringify(w));}catch(e){}
@@ -1024,6 +1297,7 @@ async function scanPrix(s){
     const {fr,fx}=defs(),lr=apprendre()[famille(s.recherche)],pct=lr?lr.pct:+$("rep").value;
     if(!r.v){box.innerHTML=`Modèle reconnu : <b>${esc(s.modele)}</b><br>Pas assez d'annonces d'occasion pour estimer son prix.`;return;}
     const rep=r.v*pct/100,fe=r.v*fr/100+fx,max=r.v-rep-fe-cible();
+    if(s.__vocal)parler(`${s.modele} : environ ${Math.round(r.v)} euros en occasion${hs.v?`, et ${Math.round(hs.v)} euros hors service`:""}. Pour garder ta marge, paie-le au maximum ${max>0?Math.round(max)+" euros":"rien, ce n'est pas rentable"}.`);
     box.innerHTML=`📸 <b>${esc(s.modele)}</b><br>
       Revente en ${r.occ?"occasion":"état de marche"} : <b>${eur(r.v)}</b> (${eur(r.min)} – ${eur(r.max)}, ${r.nb} annonces)<br>
       ${hs.v?`Prix HS habituel sur eBay : <b>${eur(hs.v)}</b> (${hs.nb} annonces)<br>Marge si tu l'achètes à ce prix : <b style="color:${r.v-hs.v-rep-fe<0?"var(--bad)":"var(--good)"}">${eur(r.v-hs.v-rep-fe)}</b><br>`:""}
@@ -1045,23 +1319,26 @@ function enregistrer(nom,mime,contenu){
 }
 const jour=()=>new Date().toISOString().slice(0,10);
 $("tCsv").onclick=()=>{
-  const s=store.json("suivi",[]);if(!s.length)return toast("Rien à exporter");
+  const s=suiviVue();if(!s.length)return toast("Rien à exporter");
   const c=v=>`"${String(v??"").replace(/"/g,'""')}"`,n=v=>v===""||v==null?"":String(v).replace(".",",");
-  const lignes=[["Appareil","Statut","Ajouté le","Vendu le","Achat prévu","Achat réel","Pièces","Revente prévue","Revente réelle","Marge","Marge réelle ?","Notes","Lien"].map(c).join(";")];
-  s.forEach(x=>{const mr=margeReelle(x);lignes.push([c(x.t),c(SNOM[x.statut]),c(new Date(x.date).toLocaleDateString("fr-FR")),
+  const lignes=[["Profil","Appareil","Statut","Ajouté le","Vendu le","Achat prévu","Achat réel","Pièces","Revente prévue","Revente réelle","Marge","Marge réelle ?","Notes","Lien"].map(c).join(";")];
+  s.forEach(x=>{const mr=margeReelle(x);lignes.push([c(nomProfil(x.__p)),c(x.t),c(SNOM[x.statut]),c(new Date(x.date).toLocaleDateString("fr-FR")),
     c(x.dates&&x.dates.vendu?new Date(x.dates.vendu).toLocaleDateString("fr-FR"):""),n(x.achatPrev),n(x.achat),n(x.pieces),n(x.reventePrev),n(x.vente),
     n(mr.m.toFixed(2)),c(mr.reel?"oui":"non"),c(x.notes),c(x.url)].join(";"));});
   enregistrer(`margeo-suivi-${jour()}.csv`,"text/csv","\ufeff"+lignes.join("\r\n"));
 };
 const sauvegarde=()=>{const o={app:"margeo",version:1,date:Date.now()};
-  ["suivi","alerts","stock","recent","vendeurs"].forEach(k=>o[k]=store.json(k,[]));
-  ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl"].forEach(k=>{const v=store.get(k,null);if(v!=null)o[k]=v;});return o;};
+  ["suivi","alerts","stock","recent","vendeurs","profils"].forEach(k=>o[k]=store.json(k,[]));
+  profils().forEach(p=>{if(p.id!=="moi")o["suivi_"+p.id]=lireSuivi(p.id);});o.price_hist=store.json("price_hist",{});
+  ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl","th_theme","th_accent","th_size","u_dl"].forEach(k=>{const v=store.get(k,null);if(v!=null)o[k]=v;});return o;};
 $("tSave").onclick=()=>enregistrer(`margeo-sauvegarde-${jour()}.json`,"application/json",JSON.stringify(sauvegarde(),null,1));
 $("restoreIn").onchange=async e=>{
   const f=e.target.files[0];e.target.value="";if(!f)return;
   try{const o=JSON.parse(await f.text());if(o.app!=="margeo")throw new Error("ce n'est pas une sauvegarde Margeo");
-    ["suivi","alerts","stock","recent","vendeurs"].forEach(k=>{if(Array.isArray(o[k]))store.put(k,o[k]);});
-    ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl"].forEach(k=>{if(o[k]!=null)store.set(k,o[k]);});
+    ["suivi","alerts","stock","recent","vendeurs","profils"].forEach(k=>{if(Array.isArray(o[k]))store.put(k,o[k]);});
+    Object.keys(o).filter(k=>k.startsWith("suivi_")&&Array.isArray(o[k])).forEach(k=>store.put(k,o[k]));
+    if(o.price_hist)store.put("price_hist",o.price_hist);
+    ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl","th_theme","th_accent","th_size","u_dl"].forEach(k=>{if(o[k]!=null)store.set(k,o[k]);});
     applyDefs();showRecent();syncConfig();refreshSettings();toast(`Restauré : ${(o.suivi||[]).length} appareils suivis`);
   }catch(err){toast("Restauration impossible : "+err.message);}
 };
@@ -1074,7 +1351,7 @@ function reduire(file){return new Promise((res,rej)=>{const r=new FileReader();r
   cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);res(cv.toDataURL("image/jpeg",.82));};im.src=r.result;};r.readAsDataURL(file);});}
 $("photoIn").onchange=async e=>{
   const files=[...e.target.files].slice(0,5);e.target.value="";if(!files.length)return;
-  const x=store.json("suivi",[]).find(y=>y.id===photoPour);
+  const x=(trouverSuivi(photoPour)||{}).x;
   let urls=[];try{urls=await Promise.all(files.map(reduire));}catch(err){return toast("Photo illisible");}
   view("vAI");
   ask(`Voici les photos que je compte mettre dans mon annonce de revente${x?` pour : ${recherche(x.t)}`:""}${x&&x.notes?` (réparation : ${x.notes})`:""}.
@@ -1084,16 +1361,16 @@ Vérifie-les comme un acheteur exigeant : lumière, netteté, fond, cadrage, ref
 
 $("tFilter").onclick=e=>{const b=e.target.closest("button");if(!b)return;tFiltre=b.dataset.k;renderSuivi();};
 function majSuivi(id,champ,val){
-  const s=store.json("suivi",[]),x=s.find(y=>y.id===id);if(!x)return;x[champ]=val;
+  const f=trouverSuivi(id);if(!f)return;const s=f.l,x=f.x;x[champ]=val;
   x.dates=x.dates||{};
   if(champ==="statut")x.dates[val]=x.dates[val]||Date.now();
   if(champ==="achat"&&val!=="")x.dates.achete=x.dates.achete||Date.now();
   if(champ==="vente"&&val!==""&&x.statut!=="vendu"){x.statut="vendu";x.dates.vendu=x.dates.vendu||Date.now();toast("Marqué comme vendu");}
-  store.put("suivi",s);
+  ecrireSuivi(f.p,s);
   const open=[...document.querySelectorAll("#tList .card.open")].map(c=>c.dataset.id);
   renderSuivi();open.forEach(o=>{const c=[...document.querySelectorAll("#tList .card")].find(c=>c.dataset.id===o);c&&c.classList.add("open");});
 }
-function supprSuivi(id){store.put("suivi",store.json("suivi",[]).filter(x=>x.id!==id));renderSuivi();toast("Retiré du suivi");}
+function supprSuivi(id){const f=trouverSuivi(id);if(f)ecrireSuivi(f.p,f.l.filter(x=>x.id!==id));renderSuivi();toast("Retiré du suivi");}
 
 /* ===================== Onglets ===================== */
 let curView="vSearch";
@@ -1107,7 +1384,7 @@ function view(v){
   if(v==="vSet")refreshSettings();
   if(v==="vAI")chatInit();
 }
-window.onBack=()=>{if(openSheet){sheet(null);return true}if(curView!=="vSearch"){view("vSearch");return true}return false};
+window.onBack=()=>{if(!$("onb").hidden){onbFin();return true}if(openSheet){sheet(null);return true}if(curView!=="vSearch"){view("vSearch");return true}return false};
 $("navS").onclick=()=>{sheet(null);if(curView!=="vSearch")view("vSearch");else{window.scrollTo({top:0,behavior:"smooth"});$("q").focus();}};
 $("navT").onclick=()=>{sheet(null);view("vTrack");};
 $("navA").onclick=()=>{sheet(null);view("vAI");};
@@ -1119,19 +1396,19 @@ $("modeBtn").onclick=$("pKeys").onclick=openKeys;
 $("kSave").onclick=async()=>{
   const id=$("kId").value.trim(),sec=$("kSec").value.trim()||keys().sec;
   if(!id||!sec){$("kMsg").className="kmsg ko";$("kMsg").textContent="Remplis l'App ID et le Cert ID.";return;}
-  store.set("ebay_id",id);store.set("ebay_sec",sec);store.set("ebay_mk",$("kMk").value);tok={v:null,exp:0};
+  store.set("ebay_id",id);secSet("ebay_sec")(sec);store.set("ebay_mk",$("kMk").value);tok={v:null,exp:0};
   $("kSave").disabled=true;$("kSave").textContent="Test en cours…";
   try{await token();$("kMsg").className="kmsg ok";$("kMsg").textContent="Connexion à eBay réussie. Tu es en mode direct.";setTimeout(()=>sheet(null),900);}
   catch(e){$("kMsg").className="kmsg ko";$("kMsg").textContent="Échec : "+e.message+" — vérifie que ce sont bien les clés de production.";}
   $("kSave").disabled=false;$("kSave").textContent="Enregistrer et tester";setMode();refreshSettings();
 };
-$("kDel").onclick=()=>{["ebay_id","ebay_sec","ebay_mk"].forEach(store.del);tok={v:null,exp:0};$("kId").value=$("kSec").value="";$("kMsg").className="kmsg ok";$("kMsg").textContent="Clés effacées, retour au mode démo.";setMode();refreshSettings();};
+$("kDel").onclick=()=>{["ebay_id","ebay_mk"].forEach(store.del);secSet("ebay_sec")("");tok={v:null,exp:0};$("kId").value=$("kSec").value="";$("kMsg").className="kmsg ok";$("kMsg").textContent="Clés effacées, retour au mode démo.";setMode();refreshSettings();};
 
 /* ===================== Alertes ===================== */
 function syncConfig(){
   if(!(window.Native&&Native.saveConfig))return;
   const k=keys(),d=defs();
-  Native.saveConfig(JSON.stringify({id:k.id,sec:k.sec,mk:k.mk,rep:d.rep,fr:d.fr,fx:d.fx,alertsOn:store.get("al_on","1")==="1",autoUpd:store.get("u_dl","1")==="1",alerts:store.json("alerts",[])}));
+  Native.saveConfig(JSON.stringify({id:k.id,sec:coffre?"":k.sec,mk:k.mk,rep:d.rep,fr:d.fr,fx:d.fx,alertsOn:store.get("al_on","1")==="1",autoUpd:store.get("u_dl","1")==="1",alerts:store.json("alerts",[])}));
 }
 $("mkAlert").onclick=()=>{
   if(!st.live){toast("Ajoute tes clés eBay pour créer une alerte");return;}
@@ -1191,7 +1468,7 @@ async function checkUpdate(manual){
       $("uStat").textContent=`Tu as la dernière version. Dernière vérification : ${new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}.`;
       $("navP").classList.remove("upd");if(manual)toast("Tu as la dernière version");
     }
-  }catch(e){$("uStat").textContent="Impossible de vérifier : "+e.message;}
+  }catch(e){$("uStat").textContent="Impossible de vérifier : "+e.message;logErr("Mise à jour : "+e.message);}
   b.classList.remove("busy");b.disabled=false;
 }
 $("uCheck").onclick=()=>checkUpdate(true);
@@ -1220,10 +1497,12 @@ function refreshSettings(){
   if($("uBadge").textContent==="–")$("uBadge").textContent="v"+v;
   const k=keys();$("pKeysS").textContent=k.id&&k.sec?"Connecté · App ID "+k.id.slice(0,10)+"…":"Non configurées · mode démo";
   $("pMk").textContent=k.mk;
-  $("pAIS").textContent=store.get("ai_key")?"Configurée · assistant actif":"Non configurée";
+  $("pAIS").textContent=aiKey()?"Configurée · assistant actif":"Non configurée";
   $("aiPhotos").checked=store.get("ai_photos","1")==="1";
   const d=defs();$("dRep").textContent=d.rep+" %";$("dFr").textContent=`${d.fr} % + ${eur(d.fx,2)}`;
-  renderAlerts();renderStock();renderVendeurs();
+  renderAlerts();renderStock();renderVendeurs();majQuota();
+  const J=journalTout();$("jTxt").innerHTML=(J.length?`${J.length} erreur${J.length>1?"s":""} notée${J.length>1?"s":""}`:"Aucune erreur")+`<small>${J.length?"Dernière : "+esc(J[J.length-1].m.slice(0,80)):"Les erreurs de l'appli sont notées ici"}</small>`;
+  $("cacheS").textContent=`${Object.keys(cache).length} prix de revente gardés 24 h`;
   $("cTaux").value=store.get("c_taux","12.3");$("cVL").checked=store.get("c_vl","0")==="1";
   $("dTarget").value=cible();$("learnOn").checked=store.get("learn","1")==="1";
   const L=Object.entries(apprendre());
@@ -1250,9 +1529,19 @@ $("cVL").onchange=()=>store.set("c_vl",$("cVL").checked?"1":"0");
 $("dTarget").onchange=()=>{store.set("d_target",String(+$("dTarget").value||0));toast("Marge visée enregistrée");};
 $("learnOn").onchange=()=>{store.set("learn",$("learnOn").checked?"1":"0");refreshSettings();};
 $("pRestore").onclick=()=>$("restoreIn").click();
+function rapport(){
+  const J=journalTout();
+  return `Journal Margeo — version ${verCode()||"navigateur"}${window.Native&&Native.appareil?" — "+Native.appareil():""}
+Mode : ${st.live?"direct":"démo"} · quota eBay : ${quota(0)}/${QUOTA}
+${J.length?J.map(e=>new Date(e.t).toLocaleString("fr-FR")+" · "+e.m).join("\n"):"Aucune erreur."}`;
+}
+$("jShare").onclick=()=>{const r=rapport();if(window.Native&&Native.share)Native.share("Journal Margeo",r);else copier(r);};
+$("jCopy").onclick=()=>copier(rapport());
+$("jDel").onclick=()=>{store.del("journal_js");if(window.Native&&Native.journalEffacer)Native.journalEffacer();refreshSettings();toast("Journal effacé");};
+$("pGuide").onclick=()=>{onbStep=0;$("onb").hidden=false;onbRender();};
 $("aiPhotos").onchange=()=>store.set("ai_photos",$("aiPhotos").checked?"1":"0");
 $("dSave").onclick=()=>{store.set("d_rep",$("rep").value);store.set("d_fr",$("fr").value);store.set("d_fx",$("fx").value);refreshSettings();badge();syncConfig();toast("Réglages par défaut enregistrés");};
-$("pCache").onclick=()=>{Object.keys(cache).forEach(k=>delete cache[k]);toast("Cache des prix vidé");};
+$("pCache").onclick=()=>{Object.keys(cache).forEach(k=>delete cache[k]);store.del("price_cache");refreshSettings();toast("Cache des prix vidé");};
 $("pRecent").onclick=()=>{store.del("recent");showRecent();toast("Recherches récentes effacées");};
 
 /* ===================== Assistant IA (Claude) ===================== */
@@ -1263,12 +1552,12 @@ Quand tu reçois des photos, décris ce que tu vois réellement (fissures, oxyda
 Réponds en français, de façon courte et concrète, avec des listes. Mets en gras les chiffres importants.
 Quand tu analyses une annonce à acheter, termine TOUJOURS ta réponse par un bloc de code json de la forme :
 \`\`\`json
-{"pieces":[{"nom":"Écran OLED iPhone 12","recherche":"ecran oled iphone 12"}]}
+{"pieces":[{"nom":"Écran OLED iPhone 12","recherche":"ecran oled iphone 12","recherche_en":"iphone 12 oled screen","ali_min":25,"ali_max":40}]}
 \`\`\`
-avec 1 à 4 pièces à commander, et une "recherche" eBay courte (3 à 6 mots, sans accents). Mets une liste vide si aucune pièce n'est nécessaire.
+avec 1 à 4 pièces à commander, une "recherche" eBay courte en français (3 à 6 mots, sans accents), une "recherche_en" en anglais pour AliExpress, et "ali_min"/"ali_max" : ta meilleure estimation du prix habituel de cette pièce sur AliExpress, livraison comprise, en euros. Mets une liste vide si aucune pièce n'est nécessaire.
 Quand tu rédiges une annonce de revente, vérifies des photos de revente ou identifies un appareil, n'ajoute pas ce bloc "pieces" (suis alors le format demandé).`;
 let chatMsgs=[],chatBusy=false,chatStarted=false;
-const aiKey=()=>store.get("ai_key");
+const aiKey=()=>secGet("ai_key");
 function md(t){return esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/^#{1,4}\s*(.+)$/gm,"<b>$1</b>").replace(/^[-•*]\s+/gm,"• ").replace(/`([^`]+)`/g,"$1").replace(/\n/g,"<br>");}
 function bubble(cls,html){const d=document.createElement("div");d.className="bub "+cls;d.innerHTML=html;$("chat").appendChild(d);d.scrollIntoView({behavior:"smooth",block:"end"});return d;}
 function chatInit(){
@@ -1305,37 +1594,51 @@ async function ask(text,ctx={}){
     chatMsgs.push({role:"assistant",content:rep});
     const m=rep.match(/```json\s*([\s\S]*?)```/);rep=rep.replace(/```json[\s\S]*?```/,"").trim();
     w.innerHTML=md(rep);
+    if(voixRepond){voixRepond=false;parler(rep);}
     const cp=document.createElement("button");cp.className="cp";cp.textContent="📋 Copier";cp.onclick=()=>copier(rep);w.appendChild(cp);
-    if(m){try{const j=JSON.parse(m[1]);if(j.pieces&&j.pieces.length)await findParts(j.pieces,ctx.item);if(j.scan&&j.scan.recherche)await scanPrix(j.scan);}catch(e){}}
+    if(m){try{const j=JSON.parse(m[1]);if(j.pieces&&j.pieces.length)await findParts(j.pieces,ctx.item);if(j.scan&&j.scan.recherche)await scanPrix({...j.scan,__vocal:(ctx.label||"").startsWith("🎤")});}catch(e){}}
     if(ctx.item){const g=document.createElement("div");g.className="btn2";g.innerHTML=guides(ctx.item.t);$("chat").appendChild(g);g.scrollIntoView({behavior:"smooth",block:"end"});}
-  }catch(e){w.innerHTML="Erreur de l'assistant : "+esc(e.message);chatMsgs.pop();}
+  }catch(e){voixRepond=false;w.innerHTML="Erreur de l'assistant : "+esc(e.message);logErr("IA : "+e.message);chatMsgs.pop();}
   chatBusy=false;
 }
+const lienAli=q=>`https://fr.aliexpress.com/w/wholesale-${encodeURIComponent(String(q).trim().toLowerCase().replace(/\s+/g,"-"))}.html`;
 async function findParts(pieces,item){
   const box=document.createElement("div");box.className="parts";
-  box.innerHTML="<h5>🔩 Pièces sur eBay</h5>";$("chat").appendChild(box);
-  if(!st.live){box.innerHTML+=`<div class="ptot"><span>Ajoute tes clés eBay pour voir les vrais prix des pièces.</span></div>`;return;}
+  box.innerHTML="<h5>🔩 Pièces : eBay et AliExpress</h5>";$("chat").appendChild(box);
   const line=document.createElement("div");line.className="ptot";line.innerHTML="<span>Recherche des prix…</span>";box.appendChild(line);
-  let tot=0,found=0;
-  for(const p of pieces.slice(0,4)){
+  let totE=0,totA=0,totBest=0,nE=0,nA=0;const P=pieces.slice(0,4);
+  for(const p of P){
     const s=enStock(p);
-    if(s){const c=+s.prix||0;tot+=c;found++;const a=document.createElement("div");a.className="part";
+    if(s){const c=+s.prix||0;totE+=c;totA+=c;totBest+=c;nE++;nA++;const a=document.createElement("div");a.className="part";
       a.innerHTML=`<img alt=""><span class="tx">${esc(p.nom)}<small>📦 Dans ton stock : ${esc(s.nom)} (${s.qte} restant${s.qte>1?"s":""})</small></span><b>${eur(c,2)}</b>`;
       box.insertBefore(a,line);continue;}
-    try{
-      const r=(await ebaySearch({q:p.recherche,cond:"1000|1500|2500|3000",limit:15})).filter(i=>prixDe(i)>0)
-        .sort((a,b)=>(prixDe(a)+portDe(a))-(prixDe(b)+portDe(b)));
-      const it=r[0],a=document.createElement("a");a.className="part";
-      if(it){const c=prixDe(it)+portDe(it);tot+=c;found++;a.href=it.itemWebUrl||"#";
-        a.innerHTML=`${(it.image||{}).imageUrl?`<img src="${esc(it.image.imageUrl)}" alt="">`:'<img alt="">'}<span class="tx">${esc(p.nom)}<small>${esc(it.title)}</small></span><b>${eur(c,2)}</b>`;}
-      else{a.href="#";a.innerHTML=`<img alt=""><span class="tx">${esc(p.nom)}<small>Introuvable sur eBay</small></span><b>–</b>`;}
-      box.insertBefore(a,line);
-    }catch(e){}
+    let ce=null;
+    if(st.live){
+      try{
+        const r=(await ebaySearch({q:p.recherche,cond:"1000|1500|2500|3000",limit:15})).filter(i=>prixDe(i)>0)
+          .sort((a,b)=>(prixDe(a)+portDe(a))-(prixDe(b)+portDe(b)));
+        const it=r[0],a=document.createElement("a");a.className="part";
+        if(it){ce=prixDe(it)+portDe(it);totE+=ce;nE++;a.href=it.itemWebUrl||"#";
+          a.innerHTML=`${(it.image||{}).imageUrl?`<img src="${esc(it.image.imageUrl)}" alt="">`:'<img alt="">'}<span class="tx">${esc(p.nom)} · eBay<small>${esc(it.title)}</small></span><b>${eur(ce,2)}</b>`;}
+        else{a.href="#";a.innerHTML=`<img alt=""><span class="tx">${esc(p.nom)} · eBay<small>Introuvable sur eBay</small></span><b>–</b>`;}
+        box.insertBefore(a,line);
+      }catch(e){logErr("Pièces eBay : "+e.message);}
+    }
+    // AliExpress : lien de recherche + estimation de l'IA (pas d'accès officiel aux prix)
+    const amin=+p.ali_min||0,amax=+p.ali_max||0,ca=amin&&amax?(amin+amax)/2:(amin||amax||null);
+    if(ca){totA+=ca;nA++;}
+    totBest+=Math.min(ce??Infinity,ca??Infinity)===Infinity?0:Math.min(ce??Infinity,ca??Infinity);
+    const a=document.createElement("a");a.className="part";a.href=lienAli(p.recherche_en||p.recherche);
+    a.innerHTML=`<span class="ali">Ali</span><span class="tx">${esc(p.nom)} · AliExpress<small>${ca?"Estimation IA · livraison souvent 1 à 3 semaines":"Voir les prix sur AliExpress"}</small></span><b>${ca?(amin&&amax?`${eur(amin)}–${eur(amax)}`:"~"+eur(ca)):"↗"}</b>`;
+    box.insertBefore(a,line);
   }
-  if(found&&item){
-    const m=item.R-item.a-tot-item.f;
-    line.innerHTML=`<span>Pièces : <b style="color:var(--ink)">${eur(tot,2)}</b><br>Marge réelle avec ces pièces</span><b style="color:${m<0?"var(--bad)":"var(--good)"}">${eur(m,2)}</b>`;
-  }else line.innerHTML=found?`<span>Total des pièces</span><b>${eur(tot,2)}</b>`:"<span>Aucune pièce trouvée.</span>";
+  const marge=t=>item?item.R-item.a-t-item.f:null,coul=m=>m<0?"var(--bad)":"var(--good)";
+  const L=[];
+  if(nE)L.push(`<div style="display:flex;justify-content:space-between;gap:10px"><span>Pièces eBay : <b style="color:var(--ink)">${eur(totE,2)}</b></span>${item?`<b style="color:${coul(marge(totE))}">marge ${eur(marge(totE))}</b>`:""}</div>`);
+  if(nA)L.push(`<div style="display:flex;justify-content:space-between;gap:10px"><span>Pièces AliExpress (estim.) : <b style="color:var(--ink)">${eur(totA,2)}</b></span>${item?`<b style="color:${coul(marge(totA))}">marge ${eur(marge(totA))}</b>`:""}</div>`);
+  if(nE&&nA&&totBest<Math.min(totE,totA)-1)L.push(`<div style="display:flex;justify-content:space-between;gap:10px"><span>Le moins cher pièce par pièce : <b style="color:var(--ink)">${eur(totBest,2)}</b></span>${item?`<b style="color:${coul(marge(totBest))}">marge ${eur(marge(totBest))}</b>`:""}</div>`);
+  if(!st.live)L.push(`<span style="font-size:.78rem">Ajoute tes clés eBay pour comparer avec les vrais prix eBay.</span>`);
+  line.style.display="block";line.innerHTML=L.length?L.join('<div style="height:8px"></div>'):"<span>Aucune pièce trouvée.</span>";
   box.scrollIntoView({behavior:"smooth",block:"end"});
 }
 async function analyse(d){
@@ -1346,7 +1649,8 @@ async function analyse(d){
     try{
       const it=await getItem(d.itemId);
       if(store.get("ai_photos","1")==="1")images=[(it.image||{}).imageUrl,...(it.additionalImages||[]).map(x=>x.imageUrl)].filter(Boolean).slice(0,4);
-      const desc=[it.conditionDescription,it.shortDescription].filter(Boolean).join("\n").slice(0,1200);
+      descCache[d.itemId]=it;
+      const desc=[it.conditionDescription,texteHTML(it.description)||it.shortDescription,(it.localizedAspects||[]).slice(0,10).map(a=>a.name+" : "+a.value).join(", ")].filter(Boolean).join("\n").slice(0,2500);
       if(desc)extra="\nDescription du vendeur : "+desc;
     }catch(e){}
     w.remove();
@@ -1362,7 +1666,7 @@ Donne : ce que montrent les photos, la panne probable, les pièces à changer, l
   ask(txt,{label:"✨ Analyse : "+d.t,item:d,images});
 }
 function redigerAnnonce(id){
-  const x=store.json("suivi",[]).find(y=>y.id===id);if(!x)return;
+  const x=(trouverSuivi(id)||{}).x;if(!x)return;
   view("vAI");
   const nom=x.t.replace(MOTS," ").replace(/\s+/g," ").trim();
   ask(`Rédige mon annonce de revente eBay pour cet appareil que j'ai réparé.
@@ -1377,14 +1681,57 @@ $("cin").addEventListener("input",()=>{const c=$("cin");c.style.height="";c.styl
 $("pAI").onclick=()=>{$("aKey").value="";$("aKey").placeholder=aiKey()?"Déjà enregistrée – laisser vide pour garder":"";$("aMsg").className="kmsg";sheet("shA");};
 $("aSave").onclick=async()=>{
   const k=$("aKey").value.trim()||aiKey();if(!k){$("aMsg").className="kmsg ko";$("aMsg").textContent="Colle ta clé API.";return;}
-  store.set("ai_key",k);$("aSave").disabled=true;$("aSave").textContent="Test en cours…";
+  secSet("ai_key")(k);$("aSave").disabled=true;$("aSave").textContent="Test en cours…";
   try{await http("POST","https://api.anthropic.com/v1/messages",{"x-api-key":k,"anthropic-version":"2023-06-01","content-type":"application/json"},
       JSON.stringify({model:AI_MODEL,max_tokens:5,messages:[{role:"user",content:"ok"}]}));
     $("aMsg").className="kmsg ok";$("aMsg").textContent="Assistant activé.";setTimeout(()=>sheet(null),900);}
   catch(e){$("aMsg").className="kmsg ko";$("aMsg").textContent="Échec : "+e.message;}
   $("aSave").disabled=false;$("aSave").textContent="Enregistrer et tester";refreshSettings();
 };
-$("aDel").onclick=()=>{store.del("ai_key");$("aMsg").className="kmsg ok";$("aMsg").textContent="Clé effacée.";refreshSettings();};
+$("aDel").onclick=()=>{secSet("ai_key")("");$("aMsg").className="kmsg ok";$("aMsg").textContent="Clé effacée.";refreshSettings();};
+
+/* ===================== Apparence ===================== */
+const mq=window.matchMedia?matchMedia("(prefers-color-scheme: light)"):null;
+function appliquerTheme(){
+  const t=store.get("th_theme","dark"),a=store.get("th_accent","aurora"),s=store.get("th_size","normal");
+  const clair=t==="light"||(t==="auto"&&mq&&mq.matches),r=document.documentElement;
+  r.dataset.theme=clair?"light":"dark";r.dataset.accent=a;r.dataset.size=s;
+  const fond=clair?"#f3f4f9":"#07080c";document.querySelector('meta[name=theme-color]').content=fond;
+  if(window.Native&&Native.setBars)try{Native.setBars(fond,clair);}catch(e){}
+  [["thTheme",t],["thAccent",a],["thSize",s]].forEach(([id,v])=>$(id)&&$(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v===v)));
+}
+[["thTheme","th_theme"],["thAccent","th_accent"],["thSize","th_size"]].forEach(([id,k])=>$(id).onclick=e=>{const b=e.target.closest("button");if(!b)return;store.set(k,b.dataset.v);appliquerTheme();});
+if(mq&&mq.addEventListener)mq.addEventListener("change",appliquerTheme);
+appliquerTheme();
+
+/* ===================== Guide de démarrage ===================== */
+let onbStep=0;
+const ONB=[
+  {em:"👋",t:"Bienvenue dans Margeo",p:"Margeo cherche les appareils HS sur eBay, estime leur prix de revente en occasion et te montre la marge possible après réparation.",
+   b:()=>`<div class="box"><div class="it"><span class="ic">🔍</span><span class="tx">Recherche<small>Les meilleures affaires, triées par marge</small></span></div><div class="it"><span class="ic">⭐</span><span class="tx">Suivi<small>Tes appareils, de l'achat à la revente</small></span></div><div class="it"><span class="ic">✨</span><span class="tx">Assistant IA<small>Pannes, pièces, photos et annonces</small></span></div></div>`},
+  {em:"🔑",t:"Connecte eBay",p:"Colle tes clés de production du portail développeur eBay. Elles sont chiffrées sur ton téléphone. Sans clés, l'appli reste en démo.",
+   b:()=>`<div class="inp"><span>App ID (Client ID)</span><input id="oId" value="${esc(keys().id)}" autocomplete="off" autocapitalize="off"></div><div class="inp"><span>Cert ID (Client Secret)</span><input id="oSec" type="password" placeholder="${keys().sec?"Déjà enregistré":""}" autocomplete="off" autocapitalize="off"></div><div class="kmsg" id="oMsg"></div>`,
+   go:async()=>{const id=$("oId").value.trim(),sec=$("oSec").value.trim()||keys().sec;if(!id||!sec)return true;
+     store.set("ebay_id",id);secSet("ebay_sec")(sec);tok={v:null,exp:0};$("oMsg").className="kmsg ok";$("oMsg").textContent="Test de connexion…";
+     try{await token();setMode();return true;}catch(e){$("oMsg").className="kmsg ko";$("oMsg").textContent="Échec : "+e.message;return false;}}},
+  {em:"🎯",t:"Tes réglages de marge",p:"Indique ta marge visée et ton coût de réparation habituel. Margeo apprendra ensuite tes vrais coûts depuis le Suivi.",
+   b:()=>`<div class="two"><div class="inp"><span>Marge visée</span><input id="oT" type="number" value="${cible()}"><em>€</em></div><div class="inp"><span>Réparation</span><input id="oR" type="number" value="${defs().rep}"><em>%</em></div></div>`,
+   go:()=>{store.set("d_target",String(+$("oT").value||50));store.set("d_rep",String(+$("oR").value||20));applyDefs();syncConfig();return true;}},
+  {em:"✨",t:"Assistant IA (facultatif)",p:"Avec une clé API Claude (console.anthropic.com), l'IA analyse les photos, trouve les pièces et rédige tes annonces.",
+   b:()=>`<div class="inp"><span>Clé API Claude (sk-ant-…)</span><input id="oAI" type="password" placeholder="${aiKey()?"Déjà enregistrée":"Facultatif"}" autocomplete="off" autocapitalize="off"></div>`,
+   go:()=>{const k=$("oAI").value.trim();if(k)secSet("ai_key")(k);return true;}},
+  {em:"🚀",t:"C'est prêt !",p:"Lance une recherche, ou touche « 🚀 Modèles rentables ». Pense à créer une alerte pour être prévenu des bonnes affaires.",b:()=>""}
+];
+function onbRender(){
+  const s=ONB[onbStep];
+  $("onbDots").innerHTML=ONB.map((x,i)=>`<i class="${i===onbStep?"on":""}"></i>`).join("");
+  $("onbBody").innerHTML=`<div class="em">${s.em}</div><h2>${s.t}</h2><p>${s.p}</p>${s.b()}`;
+  $("onbNext").textContent=onbStep===ONB.length-1?"Commencer":"Suivant";$("onbSkip").hidden=onbStep===ONB.length-1;
+}
+function onbFin(){store.set("onboard_done","1");$("onb").hidden=true;refreshSettings();render();}
+$("onbNext").onclick=async()=>{const s=ONB[onbStep];$("onbNext").disabled=true;let ok=true;try{if(s.go)ok=await s.go();}catch(e){ok=false;}
+  $("onbNext").disabled=false;if(!ok)return;if(onbStep<ONB.length-1){onbStep++;onbRender();}else onbFin();};
+$("onbSkip").onclick=onbFin;
 
 /* ===================== Démarrage ===================== */
 applyDefs();
@@ -1392,6 +1739,9 @@ majReseau();
 showRecent();
 setMode();
 refreshSettings();
+majQuota();
+try{const sh=window.Native&&Native.sharedText?Native.sharedText():"";if(sh)setTimeout(()=>window.__partage(sh),300);}catch(e){}
+if(store.get("onboard_done")!=="1"&&!suiviTous().length){$("onb").hidden=false;onbRender();}
 if(window.Native&&store.get("u_auto","1")==="1")setTimeout(()=>checkUpdate(false),1500);
 </script>
 </body>
