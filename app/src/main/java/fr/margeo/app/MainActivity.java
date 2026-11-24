@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -37,6 +38,34 @@ public class MainActivity extends Activity {
     private WebView web;
     private ValueCallback<Uri[]> fichiers;
     private static final int CHOIX_FICHIER = 7;
+    private boolean installEnAttente = false;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Retour des réglages « Sources inconnues » : on relance l'installation
+        if (installEnAttente && (Build.VERSION.SDK_INT < 26 || getPackageManager().canRequestPackageInstalls())) {
+            installEnAttente = false;
+            installer();
+        }
+    }
+
+    /** Ouvre l'installateur Android sur l'APK téléchargé. */
+    private void installer() {
+        if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+            installEnAttente = true;
+            rappel("window.__updProgress && window.__updProgress(100,'perm')");
+            startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                    Uri.parse("package:" + getPackageName())));
+            return;
+        }
+        Intent i = Updater.intentInstall(this);
+        if (i == null) {
+            rappel("window.__updProgress && window.__updProgress(0,'err')");
+            return;
+        }
+        startActivity(i);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -107,6 +136,7 @@ public class MainActivity extends Activity {
         web.loadUrl("file:///android_asset/index.html");
         setContentView(web);
         Alertes.planifier(this);
+        Updater.planifier(this);
     }
 
     @Override
@@ -141,6 +171,29 @@ public class MainActivity extends Activity {
         public void saveConfig(String json) {
             getSharedPreferences(Alertes.PREFS, 0).edit().putString("cfg", json).apply();
             Alertes.planifier(MainActivity.this);
+            Updater.planifier(MainActivity.this);
+        }
+
+        /** Télécharge la version n depuis GitHub puis lance l'installation. */
+        @JavascriptInterface
+        public void updateNow(final String url, final int n) {
+            new Thread(() -> {
+                try {
+                    long id = Updater.telecharger(getApplicationContext(), url, n);
+                    for (int i = 0; i < 1200; i++) {
+                        int[] e = Updater.etat(getApplicationContext(), id);
+                        if (e[0] == android.app.DownloadManager.STATUS_SUCCESSFUL) {
+                            rappel("window.__updProgress && window.__updProgress(100,'ok')");
+                            runOnUiThread(MainActivity.this::installer);
+                            return;
+                        }
+                        if (e[0] == android.app.DownloadManager.STATUS_FAILED || e[0] == -1) break;
+                        rappel("window.__updProgress && window.__updProgress(" + e[1] + ",'run')");
+                        Thread.sleep(500);
+                    }
+                } catch (Exception ignored) { }
+                rappel("window.__updProgress && window.__updProgress(0,'err')");
+            }).start();
         }
 
         /** Résultat de la dernière vérification des alertes. */

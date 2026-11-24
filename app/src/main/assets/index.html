@@ -369,6 +369,7 @@
     <div class="upcard">
       <div class="vr"><div><div class="hello">Version installée</div><b id="uCur">–</b></div><span id="uBadge">–</span></div>
       <p id="uStat">Touche « Vérifier » pour chercher une nouvelle version.</p>
+      <div class="progress" id="uProg" style="margin:12px 0 0"><span id="uProgT">Téléchargement…</span><div class="tr"><i id="uProgB"></i></div></div>
       <div class="notes" id="uNotes" hidden></div>
       <div class="ubtns">
         <button class="sec-b" id="uCheck"><span class="spin"></span>Vérifier</button>
@@ -378,6 +379,7 @@
     </div>
     <div class="box">
       <label class="it tog-it"><span class="ic">🔄</span><span class="tx">Vérifier au démarrage<small>Te prévient quand une nouvelle version sort</small></span><input type="checkbox" id="uAuto"></label>
+      <label class="it tog-it"><span class="ic">⬇️</span><span class="tx">Télécharger automatiquement<small>Depuis GitHub, en Wi-Fi, même appli fermée. Il ne reste qu'à confirmer l'installation.</small></span><input type="checkbox" id="uDlAuto"></label>
       <a class="it" id="uRel" href="#"><span class="ic">📦</span><span class="tx">Toutes les versions<small>Page des releases sur GitHub</small></span><span class="chev">›</span></a>
     </div>
   </div>
@@ -1129,7 +1131,7 @@ $("kDel").onclick=()=>{["ebay_id","ebay_sec","ebay_mk"].forEach(store.del);tok={
 function syncConfig(){
   if(!(window.Native&&Native.saveConfig))return;
   const k=keys(),d=defs();
-  Native.saveConfig(JSON.stringify({id:k.id,sec:k.sec,mk:k.mk,rep:d.rep,fr:d.fr,fx:d.fx,alertsOn:store.get("al_on","1")==="1",alerts:store.json("alerts",[])}));
+  Native.saveConfig(JSON.stringify({id:k.id,sec:k.sec,mk:k.mk,rep:d.rep,fr:d.fr,fx:d.fx,alertsOn:store.get("al_on","1")==="1",autoUpd:store.get("u_dl","1")==="1",alerts:store.json("alerts",[])}));
 }
 $("mkAlert").onclick=()=>{
   if(!st.live){toast("Ajoute tes clés eBay pour créer une alerte");return;}
@@ -1178,8 +1180,10 @@ async function checkUpdate(manual){
     const date=r.published_at?new Date(r.published_at).toLocaleDateString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}):"";
     if(n>cur&&apk){
       $("uBadge").textContent="Nouvelle : v"+n;$("uBadge").className="new";
-      $("uStat").textContent=`La version ${n} est disponible (publiée le ${date}). Touche « Installer » : le fichier se télécharge, puis ouvre-le pour mettre l'appli à jour.`;
+      $("uStat").textContent=`La version ${n} est disponible (publiée le ${date}).`;
+      upd={url:apk.browser_download_url,n};
       $("uDl").href=apk.browser_download_url;$("uDl").hidden=false;
+      if(window.Native&&Native.updateNow&&store.get("u_dl","1")==="1"&&!updEnCours){telechargerMaj();}
       const notes=(r.body||"").trim();$("uNotes").textContent=notes;$("uNotes").hidden=!notes;
       $("navP").classList.add("upd");if(!manual)toast("✨ Mise à jour disponible");
     }else{
@@ -1191,6 +1195,22 @@ async function checkUpdate(manual){
   b.classList.remove("busy");b.disabled=false;
 }
 $("uCheck").onclick=()=>checkUpdate(true);
+let upd=null,updEnCours=false;
+function telechargerMaj(){
+  if(!upd||!(window.Native&&Native.updateNow))return false;
+  updEnCours=true;$("uProg").classList.add("on");$("uProgT").textContent=`Téléchargement de la version ${upd.n} depuis GitHub…`;
+  Native.updateNow(upd.url,upd.n);return true;
+}
+$("uDl").onclick=e=>{if(telechargerMaj())e.preventDefault();};
+window.__updProgress=(p,etat)=>{
+  $("uProg").classList.add("on");$("uProgB").style.width=p+"%";
+  if(etat==="run")$("uProgT").textContent=`Téléchargement de la version ${upd?upd.n:""}… ${p} %`;
+  if(etat==="ok"){updEnCours=false;$("uProgT").textContent="✅ Téléchargée. Confirme l'installation dans la fenêtre d'Android.";toast("Mise à jour téléchargée");}
+  if(etat==="perm")$("uProgT").textContent="Autorise Margeo à installer des applis, puis reviens : l'installation se lancera toute seule.";
+  if(etat==="err"){updEnCours=false;$("uProgT").textContent="Échec du téléchargement. Réessaie avec « Installer ».";}
+};
+$("uDlAuto").checked=store.get("u_dl","1")==="1";
+$("uDlAuto").onchange=()=>{store.set("u_dl",$("uDlAuto").checked?"1":"0");syncConfig();};
 $("uAuto").checked=store.get("u_auto","1")==="1";
 $("uAuto").onchange=()=>store.set("u_auto",$("uAuto").checked?"1":"0");
 
