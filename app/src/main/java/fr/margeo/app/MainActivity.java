@@ -350,7 +350,7 @@ public class MainActivity extends Activity {
                     for (int i = 0; i < 6; i++) {
                         HttpURLConnection c = (HttpURLConnection) new URL(u).openConnection();
                         c.setInstanceFollowRedirects(false);
-                        c.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android) Margeo");
+                        c.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android) SpyEbay");
                         c.setConnectTimeout(10000);
                         c.setReadTimeout(10000);
                         int code = c.getResponseCode();
@@ -373,7 +373,7 @@ public class MainActivity extends Activity {
                 Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "fr-FR");
-                i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pose ta question à Margeo");
+                i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pose ta question à SpyEbay");
                 try {
                     startActivityForResult(i, VOIX);
                 } catch (Exception e) {
@@ -417,7 +417,7 @@ public class MainActivity extends Activity {
         public void copy(String text) {
             runOnUiThread(() -> {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("Margeo", text));
+                if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("SpyEbay", text));
             });
         }
 

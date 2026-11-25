@@ -1,4 +1,4 @@
-# Margeo
+# SpyEbay
 
 Appli Android qui cherche des appareils HS sur eBay et calcule la marge après réparation.
 
@@ -6,7 +6,7 @@ Appli Android qui cherche des appareils HS sur eBay et calcule la marge après r
 
 1. Mets tous ces fichiers dans un dépôt GitHub, sur la branche `main`.
 2. GitHub compile tout seul l'APK (onglet **Actions**, environ 3 à 5 minutes).
-3. Télécharge `Margeo.apk` dans l'onglet **Releases** du dépôt.
+3. Télécharge `SpyEbay.apk` dans l'onglet **Releases** du dépôt.
 4. Installe-le sur ton téléphone (autorise l'installation d'applis inconnues si Android le demande).
 
 Pour relancer une compilation à la main : **Actions → Construire l'APK → Run workflow**.

@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Margeo · meilleure affaire"
+        android:text="SpyEbay · meilleure affaire"
         android:textColor="#8B8FA3"
         android:textSize="11sp" />
 

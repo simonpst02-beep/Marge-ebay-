@@ -65,7 +65,7 @@ public class Updater {
     static void verifierEnFond(Context ctx) {
         try {
             String r = Alertes.http("GET", "https://api.github.com/repos/" + REPO + "/releases/latest",
-                    new String[][]{{"Accept", "application/vnd.github+json"}, {"User-Agent", "Margeo-app"}}, null);
+                    new String[][]{{"Accept", "application/vnd.github+json"}, {"User-Agent", "SpyEbay-app"}}, null);
             JSONObject rel = new JSONObject(r);
             int n = Integer.parseInt("0" + rel.optString("tag_name").replaceAll("\\D", ""));
             if (n <= versionInstallee(ctx)) return;
@@ -101,11 +101,11 @@ public class Updater {
         }
         if (ancien != -1) dm.remove(ancien);
         DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url))
-                .setTitle("Margeo – version " + n)
+                .setTitle("SpyEbay – version " + n)
                 .setDescription("Téléchargement de la mise à jour")
                 .setMimeType("application/vnd.android.package-archive")
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                .setDestinationInExternalFilesDir(ctx, Environment.DIRECTORY_DOWNLOADS, "Margeo-" + n + ".apk");
+                .setDestinationInExternalFilesDir(ctx, Environment.DIRECTORY_DOWNLOADS, "SpyEbay-" + n + ".apk");
         long id = dm.enqueue(req);
         sp.edit().putLong("upd_id", id).putInt("upd_n", n).apply();
         return id;
@@ -154,7 +154,7 @@ public class Updater {
         Notification.Builder b = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(ctx, CANAL) : new Notification.Builder(ctx);
         b.setSmallIcon(R.drawable.ic_notif)
-                .setContentTitle("Margeo version " + n + " prête")
+                .setContentTitle("SpyEbay version " + n + " prête")
                 .setContentText("Touche pour installer la mise à jour")
                 .setContentIntent(pi)
                 .setAutoCancel(true);

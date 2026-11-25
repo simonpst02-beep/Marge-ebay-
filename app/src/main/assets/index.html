@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#07080c">
-<title>Margeo</title>
+<title>SpyEbay</title>
 <style>
   :root{
     --bg:#07080c;--glass:rgba(255,255,255,.045);--glass2:rgba(255,255,255,.08);--stroke:rgba(255,255,255,.09);
@@ -325,7 +325,7 @@
 <!-- ===================== Recherche ===================== -->
 <div class="wrap" id="vSearch">
   <header>
-    <div><div class="hello" id="hello">Réparation d'appareils HS</div><div class="logo">Marge<span class="grad-t">o</span></div></div>
+    <div><div class="hello" id="hello">Réparation d'appareils HS</div><div class="logo">Spy<span class="grad-t">Ebay</span></div></div>
     <button class="mode" id="modeBtn">DÉMO</button>
   </header>
 
@@ -607,7 +607,7 @@
 <div class="sheet" id="shAl">
   <div class="grab"></div>
   <h3>Nouvelle alerte</h3>
-  <p class="s">Toutes les heures, Margeo refait cette recherche (annonces en achat immédiat) et t'envoie une notification dès qu'une affaire dépasse ta marge minimum.</p>
+  <p class="s">Toutes les heures, SpyEbay refait cette recherche (annonces en achat immédiat) et t'envoie une notification dès qu'une affaire dépasse ta marge minimum.</p>
   <div class="grp">
     <div class="inp"><span>Recherche</span><input id="alQ" autocomplete="off"></div>
     <div class="two">
@@ -946,7 +946,7 @@ function render(){
         <a class="cta" href="${d.url?esc(d.url):"#"}" onclick="event.stopPropagation();${d.url?"":"return false"}">Voir sur eBay
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
       </div></div>
-    </div>`}).join(""):(busy?"":`<div class="empty"><b>🔍</b>${st.live?"Lance une recherche pour voir les affaires.<br>Ou laisse Margeo tester les modèles les plus courants.":"Aucune affaire avec ces filtres."}${st.live?'<button class="cta" onclick="$(\'discover\').click()">🚀 Trouver les modèles rentables</button>':""}</div>`);
+    </div>`}).join(""):(busy?"":`<div class="empty"><b>🔍</b>${st.live?"Lance une recherche pour voir les affaires.<br>Ou laisse SpyEbay tester les modèles les plus courants.":"Aucune affaire avec ces filtres."}${st.live?'<button class="cta" onclick="$(\'discover\').click()">🚀 Trouver les modèles rentables</button>':""}</div>`);
 }
 
 /* ===================== Historique des prix ===================== */
@@ -1325,16 +1325,16 @@ $("tCsv").onclick=()=>{
   s.forEach(x=>{const mr=margeReelle(x);lignes.push([c(nomProfil(x.__p)),c(x.t),c(SNOM[x.statut]),c(new Date(x.date).toLocaleDateString("fr-FR")),
     c(x.dates&&x.dates.vendu?new Date(x.dates.vendu).toLocaleDateString("fr-FR"):""),n(x.achatPrev),n(x.achat),n(x.pieces),n(x.reventePrev),n(x.vente),
     n(mr.m.toFixed(2)),c(mr.reel?"oui":"non"),c(x.notes),c(x.url)].join(";"));});
-  enregistrer(`margeo-suivi-${jour()}.csv`,"text/csv","\ufeff"+lignes.join("\r\n"));
+  enregistrer(`spyebay-suivi-${jour()}.csv`,"text/csv","\ufeff"+lignes.join("\r\n"));
 };
-const sauvegarde=()=>{const o={app:"margeo",version:1,date:Date.now()};
+const sauvegarde=()=>{const o={app:"spyebay",version:1,date:Date.now()};
   ["suivi","alerts","stock","recent","vendeurs","profils"].forEach(k=>o[k]=store.json(k,[]));
   profils().forEach(p=>{if(p.id!=="moi")o["suivi_"+p.id]=lireSuivi(p.id);});o.price_hist=store.json("price_hist",{});
   ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl","th_theme","th_accent","th_size","u_dl"].forEach(k=>{const v=store.get(k,null);if(v!=null)o[k]=v;});return o;};
-$("tSave").onclick=()=>enregistrer(`margeo-sauvegarde-${jour()}.json`,"application/json",JSON.stringify(sauvegarde(),null,1));
+$("tSave").onclick=()=>enregistrer(`spyebay-sauvegarde-${jour()}.json`,"application/json",JSON.stringify(sauvegarde(),null,1));
 $("restoreIn").onchange=async e=>{
   const f=e.target.files[0];e.target.value="";if(!f)return;
-  try{const o=JSON.parse(await f.text());if(o.app!=="margeo")throw new Error("ce n'est pas une sauvegarde Margeo");
+  try{const o=JSON.parse(await f.text());if(o.app!=="margeo"&&o.app!=="spyebay")throw new Error("ce n'est pas une sauvegarde SpyEbay");
     ["suivi","alerts","stock","recent","vendeurs","profils"].forEach(k=>{if(Array.isArray(o[k]))store.put(k,o[k]);});
     Object.keys(o).filter(k=>k.startsWith("suivi_")&&Array.isArray(o[k])).forEach(k=>store.put(k,o[k]));
     if(o.price_hist)store.put("price_hist",o.price_hist);
@@ -1451,7 +1451,7 @@ $("uRel").href=`https://github.com/${REPO}/releases`;$("pRepo").href=`https://gi
 async function checkUpdate(manual){
   const b=$("uCheck");b.classList.add("busy");b.disabled=true;if(manual)$("uStat").textContent="Recherche d'une nouvelle version…";
   try{
-    const r=await http("GET",`https://api.github.com/repos/${REPO}/releases/latest`,{"Accept":"application/vnd.github+json","User-Agent":"Margeo-app"});
+    const r=await http("GET",`https://api.github.com/repos/${REPO}/releases/latest`,{"Accept":"application/vnd.github+json","User-Agent":"SpyEbay-app"});
     const n=parseInt(String(r.tag_name||"").replace(/\D/g,""))||0,cur=verCode();
     const apk=(r.assets||[]).find(a=>/\.apk$/i.test(a.name));
     const date=r.published_at?new Date(r.published_at).toLocaleDateString("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}):"";
@@ -1483,7 +1483,7 @@ window.__updProgress=(p,etat)=>{
   $("uProg").classList.add("on");$("uProgB").style.width=p+"%";
   if(etat==="run")$("uProgT").textContent=`Téléchargement de la version ${upd?upd.n:""}… ${p} %`;
   if(etat==="ok"){updEnCours=false;$("uProgT").textContent="✅ Téléchargée. Confirme l'installation dans la fenêtre d'Android.";toast("Mise à jour téléchargée");}
-  if(etat==="perm")$("uProgT").textContent="Autorise Margeo à installer des applis, puis reviens : l'installation se lancera toute seule.";
+  if(etat==="perm")$("uProgT").textContent="Autorise SpyEbay à installer des applis, puis reviens : l'installation se lancera toute seule.";
   if(etat==="err"){updEnCours=false;$("uProgT").textContent="Échec du téléchargement. Réessaie avec « Installer ».";}
 };
 $("uDlAuto").checked=store.get("u_dl","1")==="1";
@@ -1531,11 +1531,11 @@ $("learnOn").onchange=()=>{store.set("learn",$("learnOn").checked?"1":"0");refre
 $("pRestore").onclick=()=>$("restoreIn").click();
 function rapport(){
   const J=journalTout();
-  return `Journal Margeo — version ${verCode()||"navigateur"}${window.Native&&Native.appareil?" — "+Native.appareil():""}
+  return `Journal SpyEbay — version ${verCode()||"navigateur"}${window.Native&&Native.appareil?" — "+Native.appareil():""}
 Mode : ${st.live?"direct":"démo"} · quota eBay : ${quota(0)}/${QUOTA}
 ${J.length?J.map(e=>new Date(e.t).toLocaleString("fr-FR")+" · "+e.m).join("\n"):"Aucune erreur."}`;
 }
-$("jShare").onclick=()=>{const r=rapport();if(window.Native&&Native.share)Native.share("Journal Margeo",r);else copier(r);};
+$("jShare").onclick=()=>{const r=rapport();if(window.Native&&Native.share)Native.share("Journal SpyEbay",r);else copier(r);};
 $("jCopy").onclick=()=>copier(rapport());
 $("jDel").onclick=()=>{store.del("journal_js");if(window.Native&&Native.journalEffacer)Native.journalEffacer();refreshSettings();toast("Journal effacé");};
 $("pGuide").onclick=()=>{onbStep=0;$("onb").hidden=false;onbRender();};
@@ -1707,14 +1707,14 @@ appliquerTheme();
 /* ===================== Guide de démarrage ===================== */
 let onbStep=0;
 const ONB=[
-  {em:"👋",t:"Bienvenue dans Margeo",p:"Margeo cherche les appareils HS sur eBay, estime leur prix de revente en occasion et te montre la marge possible après réparation.",
+  {em:"👋",t:"Bienvenue dans SpyEbay",p:"SpyEbay cherche les appareils HS sur eBay, estime leur prix de revente en occasion et te montre la marge possible après réparation.",
    b:()=>`<div class="box"><div class="it"><span class="ic">🔍</span><span class="tx">Recherche<small>Les meilleures affaires, triées par marge</small></span></div><div class="it"><span class="ic">⭐</span><span class="tx">Suivi<small>Tes appareils, de l'achat à la revente</small></span></div><div class="it"><span class="ic">✨</span><span class="tx">Assistant IA<small>Pannes, pièces, photos et annonces</small></span></div></div>`},
   {em:"🔑",t:"Connecte eBay",p:"Colle tes clés de production du portail développeur eBay. Elles sont chiffrées sur ton téléphone. Sans clés, l'appli reste en démo.",
    b:()=>`<div class="inp"><span>App ID (Client ID)</span><input id="oId" value="${esc(keys().id)}" autocomplete="off" autocapitalize="off"></div><div class="inp"><span>Cert ID (Client Secret)</span><input id="oSec" type="password" placeholder="${keys().sec?"Déjà enregistré":""}" autocomplete="off" autocapitalize="off"></div><div class="kmsg" id="oMsg"></div>`,
    go:async()=>{const id=$("oId").value.trim(),sec=$("oSec").value.trim()||keys().sec;if(!id||!sec)return true;
      store.set("ebay_id",id);secSet("ebay_sec")(sec);tok={v:null,exp:0};$("oMsg").className="kmsg ok";$("oMsg").textContent="Test de connexion…";
      try{await token();setMode();return true;}catch(e){$("oMsg").className="kmsg ko";$("oMsg").textContent="Échec : "+e.message;return false;}}},
-  {em:"🎯",t:"Tes réglages de marge",p:"Indique ta marge visée et ton coût de réparation habituel. Margeo apprendra ensuite tes vrais coûts depuis le Suivi.",
+  {em:"🎯",t:"Tes réglages de marge",p:"Indique ta marge visée et ton coût de réparation habituel. SpyEbay apprendra ensuite tes vrais coûts depuis le Suivi.",
    b:()=>`<div class="two"><div class="inp"><span>Marge visée</span><input id="oT" type="number" value="${cible()}"><em>€</em></div><div class="inp"><span>Réparation</span><input id="oR" type="number" value="${defs().rep}"><em>%</em></div></div>`,
    go:()=>{store.set("d_target",String(+$("oT").value||50));store.set("d_rep",String(+$("oR").value||20));applyDefs();syncConfig();return true;}},
   {em:"✨",t:"Assistant IA (facultatif)",p:"Avec une clé API Claude (console.anthropic.com), l'IA analyse les photos, trouve les pièces et rédige tes annonces.",

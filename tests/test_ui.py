@@ -1,4 +1,4 @@
-"""Tests automatiques de l'interface Margeo (mode démo), lancés par GitHub avant chaque compilation."""
+"""Tests automatiques de l'interface SpyEbay (mode démo), lancés par GitHub avant chaque compilation."""
 import asyncio, pathlib, sys
 from playwright.async_api import async_playwright
 
