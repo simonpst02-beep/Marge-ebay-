@@ -268,6 +268,13 @@
   .spark svg{flex-shrink:0}
   .spark b.up{color:var(--good)}.spark b.down{color:var(--bad)}
   .chip.add{border-style:dashed}
+  .buybar{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 14px;padding:14px 16px;border-radius:18px;border:1px solid color-mix(in srgb,var(--a2) 40%,transparent);background:color-mix(in srgb,var(--a2) 10%,transparent);color:var(--ink);font-weight:650;font-size:.88rem;text-align:left}
+  .buybar span{flex:1}
+  .buy{padding:12px 0;border-top:1px solid var(--stroke)}
+  .buy:first-child{border-top:none}
+  .buy .t{padding-right:0;font-size:.86rem}
+  .buy .meta{margin-bottom:8px}
+  .buy .seg button{height:36px;font-size:.78rem}
   .part .ali{width:40px;height:40px;border-radius:9px;background:#e62e04;color:#fff;display:grid;place-items:center;font-size:.72rem;font-weight:800;flex-shrink:0}
   .swatches{display:flex;gap:12px}
   .swatches button{appearance:none;padding:0;overflow:hidden;width:42px;height:42px;border-radius:50%;border:3px solid transparent;background:linear-gradient(135deg,var(--s1),var(--s2));box-shadow:0 0 0 1px var(--stroke)}
@@ -375,6 +382,7 @@
   <div class="ptitle">Suivi</div>
   <p class="psub">Tes appareils, de l'achat à la revente, avec ta vraie marge.</p>
   <div class="chips" id="tProf" style="padding-top:0;margin-bottom:14px"></div>
+  <button class="buybar" id="buyBar" hidden></button>
   <section class="hero" style="margin-top:0">
     <div class="lbl"><span class="pulse"></span>Bénéfice réalisé</div>
     <div class="big" id="tProfit">0 €</div>
@@ -466,6 +474,14 @@
     <div class="box">
       <div class="it"><span class="ic">🧾</span><span class="tx">Taux de cotisations<small>Vente de marchandises : 12,3 % en 2026</small></span><input class="mini" id="cTaux" type="number" step="0.1" inputmode="decimal"></div>
       <label class="it tog-it"><span class="ic">💶</span><span class="tx">Versement libératoire de l'impôt<small>Ajoute 1 % du chiffre d'affaires</small></span><input type="checkbox" id="cVL"></label>
+    </div>
+  </div>
+
+  <div class="sec"><h4>Mes achats eBay</h4>
+    <div class="box">
+      <button class="it" id="uConn"><span class="ic">🛒</span><span class="tx" id="uConnT">Connecter mon compte eBay<small>Pour importer automatiquement tes achats dans le Suivi</small></span><span class="chev">›</span></button>
+      <button class="it" id="uImp" hidden><span class="ic">⬇️</span><span class="tx">Importer mes achats maintenant<small id="uImpS">Achats des 30 derniers jours</small></span><span class="chev">›</span></button>
+      <button class="it" id="uOut" hidden><span class="ic">🔌</span><span class="tx">Déconnecter mon compte eBay</span><span class="chev">›</span></button>
     </div>
   </div>
 
@@ -593,6 +609,27 @@
   <div class="acts"><button class="ghost" id="aDel">Effacer</button><button class="pri" id="aSave">Enregistrer et tester</button></div>
 </div>
 
+<!-- Connexion du compte eBay -->
+<div class="sheet" id="shU">
+  <div class="grab"></div>
+  <h3>Connecter mon compte eBay</h3>
+  <p class="s">SpyEbay récupère tes achats pour les ajouter au Suivi. Tu te connectes sur la page officielle d'eBay : l'appli ne voit jamais ton mot de passe. Il faut d'abord créer un <b>RuName</b> sur le portail développeur (portail → User Tokens → « Get a Token from eBay via Your Application » → ajouter une adresse de retour, en mode <b>OAuth</b>), puis le coller ici.</p>
+  <div class="grp">
+    <div class="inp"><span>RuName (eBay Redirect URL name)</span><input id="uRun" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ex. : Simon_Pst-SimonPst-SpyEba-abcde"></div>
+  </div>
+  <div id="uMsg" class="kmsg"></div>
+  <div class="acts"><button class="ghost" id="uCancel">Annuler</button><button class="pri" id="uGo">Se connecter à eBay</button></div>
+</div>
+
+<!-- Achats à classer -->
+<div class="sheet" id="shBuy">
+  <div class="grab"></div>
+  <h3>Nouveaux achats eBay</h3>
+  <p class="s">Indique pour chaque achat s'il s'agit d'un appareil à réparer (ajouté au Suivi en « Acheté ») ou d'une pièce (ajoutée à ton stock).</p>
+  <div id="buyList" style="margin-top:14px"></div>
+  <div class="acts"><button class="ghost" id="buyLater">Plus tard</button><button class="pri" id="buyOk">Valider</button></div>
+</div>
+
 <!-- Nouveau profil -->
 <div class="sheet" id="shP">
   <div class="grab"></div>
@@ -689,11 +726,12 @@ const fmtH=h=>h<1?Math.max(1,Math.round(h*60))+" min":h<48?Math.round(h)+" h":Ma
 /* ===================== Pont HTTP Android ===================== */
 const cbs={};
 window.__native=(id,code,text)=>{const c=cbs[id];delete cbs[id];if(!c)return;
+  if(c.raw){if(code>=200&&code<300)c.res(text);else c.rej(new Error(code?`${code} : ${text.slice(0,200)}`:text));return;}
   if(code>=200&&code<300){try{c.res(text.trim()?JSON.parse(text):{})}catch(e){c.rej(new Error("Réponse illisible"))}}
   else c.rej(new Error(code?`${code} : ${text.slice(0,200)}`:text));};
-function http(method,url,headers={},body=""){
-  if(window.Native) return new Promise((res,rej)=>{const id=Math.random().toString(36).slice(2);cbs[id]={res,rej};Native.http(id,method,url,JSON.stringify(headers),body);});
-  return fetch(url,{method,headers,body:body||undefined}).then(async r=>{const t=await r.text();if(!r.ok)throw new Error(`${r.status} : ${t.slice(0,200)}`);return t?JSON.parse(t):{};});
+function http(method,url,headers={},body="",raw=false){
+  if(window.Native) return new Promise((res,rej)=>{const id=Math.random().toString(36).slice(2);cbs[id]={res,rej,raw};Native.http(id,method,url,JSON.stringify(headers),body);});
+  return fetch(url,{method,headers,body:body||undefined}).then(async r=>{const t=await r.text();if(!r.ok)throw new Error(`${r.status} : ${t.slice(0,200)}`);return raw?t:(t?JSON.parse(t):{});});
 }
 
 /* ===================== API eBay ===================== */
@@ -1066,6 +1104,124 @@ window.__partage=async texte=>{
   }catch(e){prog(false);showMsg("err","Annonce partagée : "+e.message);}
 };
 
+/* ===================== Compte eBay : import des achats ===================== */
+const SCOPES=["https://api.ebay.com/oauth/api_scope","https://api.ebay.com/oauth/api_scope/commerce.identity.readonly"].join(" ");
+let utok={v:null,exp:0};
+const connecte=()=>!!secGet("ebay_rt");
+async function userToken(){
+  if(utok.v&&Date.now()<utok.exp-60000)return utok.v;
+  const rt=secGet("ebay_rt");if(!rt)throw new Error("compte eBay non connecté");
+  const k=keys();appelEbay();
+  const d=await http("POST",API+"/identity/v1/oauth2/token",{"Authorization":"Basic "+btoa(k.id+":"+k.sec),"Content-Type":"application/x-www-form-urlencoded"},
+    "grant_type=refresh_token&refresh_token="+encodeURIComponent(rt)+"&scope="+encodeURIComponent(SCOPES));
+  utok={v:d.access_token,exp:Date.now()+d.expires_in*1000};return utok.v;
+}
+function ouvrirConnexion(){
+  if(!st.live)return toast("Ajoute d'abord tes clés eBay");
+  $("uRun").value=store.get("ebay_runame");$("uMsg").className="kmsg";sheet("shU");
+}
+$("uConn").onclick=()=>connecte()?importerAchats(true):ouvrirConnexion();
+$("uCancel").onclick=()=>sheet(null);
+$("uGo").onclick=()=>{
+  const run=$("uRun").value.trim();if(!run){$("uMsg").className="kmsg ko";$("uMsg").textContent="Colle ton RuName.";return;}
+  store.set("ebay_runame",run);
+  if(!(window.Native&&Native.oauth)){$("uMsg").className="kmsg ko";$("uMsg").textContent="La connexion fonctionne dans l'appli Android.";return;}
+  const url=`https://auth.ebay.com/oauth2/authorize?client_id=${encodeURIComponent(keys().id)}&redirect_uri=${encodeURIComponent(run)}&response_type=code&scope=${encodeURIComponent(SCOPES)}&prompt=login`;
+  sheet(null);Native.oauth(url);
+};
+window.__oauth=async code=>{
+  if(!code)return toast("Connexion eBay annulée");
+  toast("Connexion à ton compte eBay…");
+  try{
+    const k=keys();appelEbay();
+    const d=await http("POST",API+"/identity/v1/oauth2/token",{"Authorization":"Basic "+btoa(k.id+":"+k.sec),"Content-Type":"application/x-www-form-urlencoded"},
+      "grant_type=authorization_code&code="+encodeURIComponent(code)+"&redirect_uri="+encodeURIComponent(store.get("ebay_runame")));
+    if(!d.refresh_token)throw new Error("eBay n'a pas renvoyé d'autorisation durable");
+    secSet("ebay_rt")(d.refresh_token);utok={v:d.access_token,exp:Date.now()+d.expires_in*1000};
+    store.set("ebay_rt_exp",String(Date.now()+(d.refresh_token_expires_in||47304000)*1000));
+    try{const u=await http("GET","https://apiz.ebay.com/commerce/identity/v1/user/",{"Authorization":"Bearer "+d.access_token});if(u.username)store.set("ebay_user",u.username);}catch(e){}
+    refreshSettings();toast("✅ Compte eBay connecté");importerAchats(true);
+  }catch(e){logErr("Connexion eBay : "+e.message);toast("Échec de la connexion : "+e.message);}
+};
+$("uOut").onclick=()=>{secSet("ebay_rt")("");["ebay_user","ebay_rt_exp","achats_last"].forEach(store.del);utok={v:null,exp:0};refreshSettings();toast("Compte eBay déconnecté");};
+$("uImp").onclick=()=>importerAchats(true);
+
+const PIECE=/(?<![\p{L}\p{N}])(écrans?|ecrans?|lcd|oled|batterie|nappe|connecteur|port de charge|vitre|châssis|chassis|haut-parleur|caméra|camera|bouton|joystick|ventilateur|pâte thermique|tournevis|outils?|kit de réparation|adhésif|joint|lentille|cache|clapet|module|carte fille|cordon)(?![\p{L}\p{N}])/iu;
+const legacyDe=id=>(String(id).match(/\|(\d{9,15})\|/)||[])[1]||String(id);
+const xtxt=(el,tag)=>{const e=el.getElementsByTagName(tag)[0];return e?e.textContent:"";};
+async function importerAchats(manuel){
+  if(!connecte()){if(manuel)ouvrirConnexion();return;}
+  if(manuel)toast("Import de tes achats eBay…");
+  try{
+    const body=`<?xml version="1.0" encoding="utf-8"?><GetOrdersRequest xmlns="urn:ebay:apis:eBLBaseComponents"><OrderRole>Buyer</OrderRole><NumberOfDays>30</NumberOfDays><DetailLevel>ReturnAll</DetailLevel><Pagination><EntriesPerPage>100</EntriesPerPage><PageNumber>1</PageNumber></Pagination></GetOrdersRequest>`;
+    const tk=await userToken();appelEbay();
+    const xml=await http("POST","https://api.ebay.com/ws/api.dll",{"X-EBAY-API-CALL-NAME":"GetOrders","X-EBAY-API-SITEID":"71","X-EBAY-API-COMPATIBILITY-LEVEL":"1349","X-EBAY-API-IAF-TOKEN":tk,"Content-Type":"text/xml"},body,true);
+    const n=traiterCommandes(xml);
+    store.set("achats_last",String(Date.now()));refreshSettings();majBuyBar();
+    if(manuel||n.aClasser)toast(n.aClasser?`🛒 ${n.aClasser} nouvel${n.aClasser>1?"s":""} achat${n.aClasser>1?"s":""} à classer`:n.maj?`${n.maj} appareil(s) du Suivi mis à jour`:"Aucun nouvel achat");
+    if(n.aClasser&&manuel){view("vTrack");ouvrirClassement();}
+  }catch(e){logErr("Import des achats : "+e.message);if(manuel)toast("Erreur : "+e.message);}
+}
+/* Lit la réponse GetOrders d'eBay : met à jour le Suivi existant, met de côté les nouveaux achats */
+function traiterCommandes(xml){
+  const doc=new DOMParser().parseFromString(xml,"text/xml");
+  if(xtxt(doc,"Ack")==="Failure")throw new Error(xtxt(doc,"LongMessage")||"refus d'eBay");
+  const vus=new Set(store.json("achats_vus",[])),attente=store.json("achats_a_classer",[]);let maj=0,ajout=0;
+  [...doc.getElementsByTagName("Order")].forEach(o=>{
+    const tr=[...o.getElementsByTagName("Transaction")];if(!tr.length)return;
+    const port=parseFloat(xtxt(o.getElementsByTagName("ShippingServiceSelected")[0]||o,"ShippingServiceCost"))||0;
+    const quand=Date.parse(xtxt(o,"CreatedTime"))||Date.now();
+    tr.forEach(t=>{
+      const item=t.getElementsByTagName("Item")[0]||t,legacy=xtxt(item,"ItemID"),cle=legacy+"-"+(xtxt(t,"TransactionID")||xtxt(o,"OrderID"));
+      if(!legacy||vus.has(cle))return;
+      const qte=parseInt(xtxt(t,"QuantityPurchased"))||1,prix=(parseFloat(xtxt(t,"TransactionPrice"))||0)*qte+port/tr.length;
+      const titre=xtxt(item,"Title")||"Achat eBay "+legacy;
+      vus.add(cle);
+      const f=profils().map(p=>({p:p.id,l:lireSuivi(p.id)})).map(x=>({...x,x:x.l.find(y=>legacyDe(y.itemId||y.id)===legacy)})).find(x=>x.x);
+      if(f){const x=f.x;if(x.statut==="repere")x.statut="achete";if(x.achat==="")x.achat=+prix.toFixed(2);x.dates=x.dates||{};x.dates.achete=x.dates.achete||quand;x.commandeEbay=cle;ecrireSuivi(f.p,f.l);maj++;return;}
+      attente.push({cle,legacy,t:titre,prix:+prix.toFixed(2),qte,quand,type:PIECE.test(titre)&&!new RegExp(MOTS.source,"iu").test(titre)?"piece":"appareil"});ajout++;
+    });
+  });
+  store.put("achats_vus",[...vus].slice(-1000));store.put("achats_a_classer",attente);
+  return{maj,aClasser:attente.length,ajout};
+}
+function majBuyBar(){
+  const n=store.json("achats_a_classer",[]).length,b=$("buyBar");
+  b.hidden=!n;b.innerHTML=`🛒 <span>${n} nouvel${n>1?"s":""} achat${n>1?"s":""} eBay à classer</span><b>›</b>`;
+  $("navT").classList.toggle("upd",n>0);
+  if(!$("navT").querySelector(".nd"))$("navT").insertAdjacentHTML("afterbegin",'<span class="nd"></span>');
+}
+$("buyBar").onclick=()=>ouvrirClassement();
+function ouvrirClassement(){
+  const a=store.json("achats_a_classer",[]);if(!a.length)return;
+  $("buyList").innerHTML=a.map((x,i)=>`<div class="buy"><div class="t">${esc(x.t)}</div>
+    <div class="meta"><span>${eur(x.prix,2)}${x.qte>1?` · ${x.qte} pièces`:""}</span><span>${new Date(x.quand).toLocaleDateString("fr-FR")}</span></div>
+    <div class="seg" data-i="${i}">${[["appareil","🔧 Appareil"],["piece","🔩 Pièce"],["ignorer","Ignorer"]].map(([k,l])=>`<button data-v="${k}" class="${x.type===k?"on":""}">${l}</button>`).join("")}</div></div>`).join("");
+  sheet("shBuy");
+}
+$("buyList").onclick=e=>{const b=e.target.closest("button"),s=e.target.closest(".seg");if(!b||!s)return;
+  s.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  const a=store.json("achats_a_classer",[]);a[+s.dataset.i].type=b.dataset.v;store.put("achats_a_classer",a);};
+$("buyLater").onclick=()=>sheet(null);
+$("buyOk").onclick=async()=>{
+  const a=store.json("achats_a_classer",[]),pc=profilCourant()==="tous"?"moi":profilCourant();
+  const l=lireSuivi(pc),stock=store.json("stock",[]),nouveaux=[];let nA=0,nP=0;
+  a.forEach(x=>{
+    if(x.type==="appareil"){const it={id:"ebay-"+x.cle,itemId:"v1|"+x.legacy+"|0",t:x.t,img:"",ico:"🛒",url:"https://www.ebay.fr/itm/"+x.legacy,
+      achatPrev:x.prix,reventePrev:0,min:null,max:null,occ:true,margePrev:0,statut:"achete",achat:x.prix,pieces:"",vente:"",notes:"",date:x.quand,dates:{achete:x.quand}};
+      l.unshift(it);nouveaux.push(it);nA++;}
+    else if(x.type==="piece"){stock.push({nom:x.t.slice(0,70),qte:x.qte,prix:+(x.prix/x.qte).toFixed(2)});nP++;}
+  });
+  ecrireSuivi(pc,l);store.put("stock",stock);store.put("achats_a_classer",[]);
+  sheet(null);majBuyBar();renderSuivi();
+  toast([nA?`${nA} appareil(s) ajouté(s) au Suivi`:"",nP?`${nP} pièce(s) au stock`:""].filter(Boolean).join(" · ")||"C'est classé");
+  // Estime la revente des nouveaux appareils (prix d'occasion actuels)
+  if(st.live)for(const it of nouveaux.slice(0,8)){
+    try{const r=await revente({title:it.t});if(!r.v)continue;
+      const f=trouverSuivi(it.id);if(!f)continue;Object.assign(f.x,{reventePrev:Math.round(r.v),min:r.min,max:r.max,occ:r.occ});ecrireSuivi(f.p,f.l);renderSuivi();}catch(e){}
+  }
+};
+
 /* ===================== Descriptif de l'annonce ===================== */
 const descCache={};
 const texteHTML=html=>{try{const d=new DOMParser().parseFromString(String(html||""),"text/html");d.querySelectorAll("script,style").forEach(e=>e.remove());
@@ -1106,7 +1262,7 @@ function margeReelle(x){
   return{m:x.reventePrev-achat-pieces-(x.reventePrev*fr/100+fx),reel:false};
 }
 function renderSuivi(){
-  renderProfils();
+  renderProfils();majBuyBar();
   const s=suiviVue(),vendus=s.filter(x=>x.statut==="vendu"&&x.vente!=="");
   const tot=vendus.reduce((a,x)=>a+margeReelle(x).m,0);
   $("tProfit").textContent=(tot>=0?"+":"")+eur(tot);
@@ -1330,7 +1486,7 @@ $("tCsv").onclick=()=>{
 const sauvegarde=()=>{const o={app:"spyebay",version:1,date:Date.now()};
   ["suivi","alerts","stock","recent","vendeurs","profils"].forEach(k=>o[k]=store.json(k,[]));
   profils().forEach(p=>{if(p.id!=="moi")o["suivi_"+p.id]=lireSuivi(p.id);});o.price_hist=store.json("price_hist",{});
-  ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl","th_theme","th_accent","th_size","u_dl"].forEach(k=>{const v=store.get(k,null);if(v!=null)o[k]=v;});return o;};
+  ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl","th_theme","th_accent","th_size","u_dl","ebay_runame"].forEach(k=>{const v=store.get(k,null);if(v!=null)o[k]=v;});return o;};
 $("tSave").onclick=()=>enregistrer(`spyebay-sauvegarde-${jour()}.json`,"application/json",JSON.stringify(sauvegarde(),null,1));
 $("restoreIn").onchange=async e=>{
   const f=e.target.files[0];e.target.value="";if(!f)return;
@@ -1338,7 +1494,7 @@ $("restoreIn").onchange=async e=>{
     ["suivi","alerts","stock","recent","vendeurs","profils"].forEach(k=>{if(Array.isArray(o[k]))store.put(k,o[k]);});
     Object.keys(o).filter(k=>k.startsWith("suivi_")&&Array.isArray(o[k])).forEach(k=>store.put(k,o[k]));
     if(o.price_hist)store.put("price_hist",o.price_hist);
-    ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl","th_theme","th_accent","th_size","u_dl"].forEach(k=>{if(o[k]!=null)store.set(k,o[k]);});
+    ["d_rep","d_fr","d_fx","d_target","learn","al_on","ai_photos","u_auto","ebay_mk","c_taux","c_vl","th_theme","th_accent","th_size","u_dl","ebay_runame"].forEach(k=>{if(o[k]!=null)store.set(k,o[k]);});
     applyDefs();showRecent();syncConfig();refreshSettings();toast(`Restauré : ${(o.suivi||[]).length} appareils suivis`);
   }catch(err){toast("Restauration impossible : "+err.message);}
 };
@@ -1501,6 +1657,10 @@ function refreshSettings(){
   $("aiPhotos").checked=store.get("ai_photos","1")==="1";
   const d=defs();$("dRep").textContent=d.rep+" %";$("dFr").textContent=`${d.fr} % + ${eur(d.fx,2)}`;
   renderAlerts();renderStock();renderVendeurs();majQuota();
+  const co=connecte(),u=store.get("ebay_user"),last=+store.get("achats_last","0");
+  $("uConnT").innerHTML=co?`Connecté${u?" : "+esc(u):""}<small>Tes achats arrivent automatiquement dans le Suivi</small>`:`Connecter mon compte eBay<small>Pour importer automatiquement tes achats dans le Suivi</small>`;
+  $("uImp").hidden=$("uOut").hidden=!co;
+  $("uImpS").textContent=last?"Dernier import : "+new Date(last).toLocaleString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"Achats des 30 derniers jours";
   const J=journalTout();$("jTxt").innerHTML=(J.length?`${J.length} erreur${J.length>1?"s":""} notée${J.length>1?"s":""}`:"Aucune erreur")+`<small>${J.length?"Dernière : "+esc(J[J.length-1].m.slice(0,80)):"Les erreurs de l'appli sont notées ici"}</small>`;
   $("cacheS").textContent=`${Object.keys(cache).length} prix de revente gardés 24 h`;
   $("cTaux").value=store.get("c_taux","12.3");$("cVL").checked=store.get("c_vl","0")==="1";
@@ -1741,6 +1901,8 @@ setMode();
 refreshSettings();
 majQuota();
 try{const sh=window.Native&&Native.sharedText?Native.sharedText():"";if(sh)setTimeout(()=>window.__partage(sh),300);}catch(e){}
+majBuyBar();
+if(connecte()&&st.live&&Date.now()-(+store.get("achats_last","0"))>6*36e5)setTimeout(()=>importerAchats(false),2500);
 if(store.get("onboard_done")!=="1"&&!suiviTous().length){$("onb").hidden=false;onbRender();}
 if(window.Native&&store.get("u_auto","1")==="1")setTimeout(()=>checkUpdate(false),1500);
 </script>

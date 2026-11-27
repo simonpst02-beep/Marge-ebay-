@@ -92,6 +92,30 @@ async def main():
         await pg.wait_for_timeout(300)
         verifier("aliexpress.com/w/wholesale-iphone-12-screen" in await pg.inner_html("#chat"), "le lien AliExpress des pièces est créé")
 
+        # Import des achats eBay (réponse GetOrders simulée)
+        await pg.evaluate("""(()=>{const l=lireSuivi('moi');l[1].itemId='v1|111111111111|0';ecrireSuivi('moi',l);})()""")
+        xml = """<?xml version="1.0"?><GetOrdersResponse xmlns="urn:ebay:apis:eBLBaseComponents"><Ack>Success</Ack><OrderArray>
+        <Order><OrderID>A1</OrderID><CreatedTime>2026-11-20T10:00:00.000Z</CreatedTime><ShippingServiceSelected><ShippingServiceCost currencyID="EUR">6.0</ShippingServiceCost></ShippingServiceSelected>
+          <TransactionArray><Transaction><Item><ItemID>111111111111</ItemID><Title>iPhone 12 HS</Title></Item><QuantityPurchased>1</QuantityPurchased><TransactionID>9</TransactionID><TransactionPrice currencyID="EUR">90.0</TransactionPrice></Transaction></TransactionArray></Order>
+        <Order><OrderID>A2</OrderID><CreatedTime>2026-11-21T10:00:00.000Z</CreatedTime><ShippingServiceSelected><ShippingServiceCost currencyID="EUR">0</ShippingServiceCost></ShippingServiceSelected>
+          <TransactionArray><Transaction><Item><ItemID>222222222222</ItemID><Title>PS4 Slim ne s'allume pas</Title></Item><QuantityPurchased>1</QuantityPurchased><TransactionID>8</TransactionID><TransactionPrice currencyID="EUR">60.0</TransactionPrice></Transaction>
+          <Transaction><Item><ItemID>333333333333</ItemID><Title>Ecran OLED iPhone 12 neuf</Title></Item><QuantityPurchased>2</QuantityPurchased><TransactionID>7</TransactionID><TransactionPrice currencyID="EUR">25.0</TransactionPrice></Transaction></TransactionArray></Order>
+        </OrderArray></GetOrdersResponse>"""
+        r = await pg.evaluate("x=>traiterCommandes(x)", xml)
+        verifier(r["maj"] == 1 and r["aClasser"] == 2, f"les achats sont lus ({r})")
+        types = await pg.evaluate("store.json('achats_a_classer',[]).map(x=>x.type)")
+        verifier(types == ["appareil", "piece"], f"appareil et pièce sont reconnus ({types})")
+        f = await pg.evaluate("lireSuivi('moi').find(x=>x.itemId==='v1|111111111111|0')")
+        verifier(f["statut"] == "achete" and abs(f["achat"] - 96) < 0.01, "l'appareil étoilé passe en « Acheté » avec le vrai prix")
+        await pg.evaluate("store.set('profil','moi');view('vTrack')")
+        await pg.click("#buyBar")
+        await pg.click("#buyOk")
+        await pg.wait_for_timeout(300)
+        verifier(await pg.evaluate("lireSuivi('moi').some(x=>x.t.includes('PS4'))"), "le nouvel appareil est ajouté au Suivi")
+        verifier(await pg.evaluate("store.json('stock',[]).some(x=>x.qte==2&&x.prix==25)"), "la pièce est ajoutée au stock")
+        r2 = await pg.evaluate("x=>traiterCommandes(x)", xml)
+        verifier(r2["aClasser"] == 0, "un achat n'est jamais importé deux fois")
+
         # Paramètres et thèmes
         await pg.click("#navP")
         await pg.click("#thTheme button[data-v=light]")

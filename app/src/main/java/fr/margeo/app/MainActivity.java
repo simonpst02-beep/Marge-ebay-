@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
     private static final int CHOIX_FICHIER = 7;
     private boolean installEnAttente = false;
     private static final int VOIX = 8;
+    private static final int CONNEXION = 9;
     private TextToSpeech tts;
     private boolean ttsPret = false;
     private String partage = null;
@@ -100,6 +101,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONNEXION) {
+            String code = resultCode == RESULT_OK && data != null ? data.getStringExtra("code") : "";
+            rappel("window.__oauth && window.__oauth(" + JSONObject.quote(code == null ? "" : code) + ")");
+            return;
+        }
         if (requestCode == VOIX) {
             String texte = "";
             if (resultCode == RESULT_OK && data != null) {
@@ -364,6 +370,13 @@ public class MainActivity extends Activity {
                 try { json = new JSONObject().put("url", u).toString(); } catch (Exception e) { json = "{}"; }
                 rappel("window.__native(" + JSONObject.quote(id) + ",200," + JSONObject.quote(json) + ")");
             }).start();
+        }
+
+        /** Ouvre la page de connexion eBay (OAuth). */
+        @JavascriptInterface
+        public void oauth(final String url) {
+            runOnUiThread(() -> startActivityForResult(
+                    new Intent(MainActivity.this, OAuthActivity.class).putExtra("url", url), CONNEXION));
         }
 
         /** Dictée vocale (reconnaissance vocale d'Android). */
